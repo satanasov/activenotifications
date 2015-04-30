@@ -50,7 +50,7 @@
 			// Now let us add them
 			$('.dropdown-contents ul li:first').before( output );
 			// Change value of notification counter
-			$('#notification_list_button strong').val(unread);
+			$('#notification_list_button strong').html(unread.toString());
 			// Now let's set window title
 			var docTitleWithNote;
 			docTitleWithNote = '(' + unread.toString() + ')' + docTitle;

@@ -22,7 +22,7 @@ class listener implements EventSubscriberInterface
 	{
 		return array(
 			'core.acp_board_config_edit_add'	=>	'add_options',
-			'core.user_setup'		=> 'setup',
+			'core.page_header'		=> 'setup',
 		);
 	}
 
