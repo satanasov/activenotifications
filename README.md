@@ -10,3 +10,4 @@ This extension will keep your notifications "active" - it will pull special cont
 
 ACP -> Board features -> Active Notifications
 
+#WARNING!!! This extension is tested only with prosilver. If your style is not supported by default - contact me and I will see what can be done!
