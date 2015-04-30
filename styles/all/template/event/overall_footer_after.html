@@ -52,9 +52,12 @@
 			// Change value of notification counter
 			$('#notification_list_button strong').html(unread.toString());
 			// Now let's set window title
-			var docTitleWithNote;
-			docTitleWithNote = '(' + unread.toString() + ')' + docTitle;
-			document.title = docTitleWithNote;
+			if (unread > 0)
+			{
+				var docTitleWithNote;
+				docTitleWithNote = '(' + unread.toString() + ')' + docTitle;
+				document.title = docTitleWithNote;
+			}
 		});
 	}
 	function autoReload() {
