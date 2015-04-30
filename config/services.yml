@@ -1,0 +1,25 @@
+services:
+    anavaro.activenotifications.maincontroller:
+        class: anavaro\activenotifications\controller\main_controller
+        arguments:
+            - @config
+            - @user
+            - @request
+            - @anavaro.activenotifications.notifyhelper
+    anavaro.activenotifications.notifyhelper:
+        class: anavaro\activenotifications\controller\notifyhelper
+        arguments:
+            - @config
+            - @user
+            - @dbal.conn
+            - @service_container
+    anavaro.activenotifications.listener:
+        class: anavaro\activenotifications\event\listener
+        arguments:
+            - @config
+            - @user
+            - @template
+            - @request
+            - @anavaro.activenotifications.notifyhelper
+        tags:
+            - { name: event.listener }

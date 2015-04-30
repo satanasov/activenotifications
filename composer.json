@@ -1,0 +1,29 @@
+{
+	"name": "anavaro/activenotifications",
+	"type": "phpbb-extension",
+	"description": "This extension add active notifications to phpBB 3.1 board",
+	"homepage": "",
+	"version": "0.5",
+	"time": "2015-04-29",
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Stanislav Atanasov",
+			"email": "lucifer@anavaro.com",
+			"homepage": "http://anavaro.com",
+			"role": "Lead Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3"
+	},
+	"require-dev": {
+		"phpbb/epv": "dev-master"
+	},
+	"extra": {
+		"display-name": "phpBB 3.1 Active Notifications",
+		"soft-require": {
+			"phpbb/phpbb": ">=3.1.0-RC2,<3.2.*@dev"
+		}
+	}
+}
