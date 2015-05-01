@@ -30,13 +30,13 @@
 				{
 					notification = '<li>\n';
 				}
-				notification = notification + '<a class="notification-block" href="' + not.U_MARK_READ + '" data-real-url="' + not.URL + '">\n';
+				notification = notification + '<a class="notification-block" href="./' + not.U_MARK_READ.substr(8) + '" data-real-url="./' + not.URL.substr(8) + '">\n';
 					if (!not.AVATAR) {
 						notification = notification + '<img src="{T_THEME_PATH}/images/no_avatar.gif"></img>\n';
 					}
 					else
 					{
-						notification = notification + '<img src="' + not.AVATAR + '"></img>\n';
+						notification = notification + '<img src="./' + not.AVATAR.substr(8) + '"></img>\n';
 					}
 					notification = notification + '<div class="notification_text">\n';
 						notification = notification + '<p class="notification-title">' + not.FORMATTED_TITLE + '</p>\n';
