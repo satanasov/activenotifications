@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+	<table name="phpbb_config">
+		<column>config_name</column>
+		<column>config_value</column>
+		<column>is_dynamic</column>
+		<row>
+			<value>notification_pull_time</value>
+			<value>60</value>
+			<value>0</value>
+		</row>
+	</table>
+	<table name="phpbb_notification_types">
+		<column>notification_type_id</column>
+		<column>notification_type_name</column>
+		<column>notification_type_enabled</column>
+		<row>
+			<value>1</value>
+			<value>notification.type.pm</value>
+			<value>1</value>
+		</row>
+	</table>
+	<table name="phpbb_user_notifications">
+		<column>item_type</column>
+		<column>item_id</column>
+		<column>user_id</column>
+		<column>method</column>
+		<column>notify</column>
+		<row>
+			<value>notification.type.pm</value>
+			<value>0</value>
+			<value>2</value>
+			<value></value>
+			<value>1</value>
+		</row>
+	</table>
+</dataset>

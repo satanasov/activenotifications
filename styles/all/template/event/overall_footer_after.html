@@ -3,13 +3,15 @@
 (function($) {  // Avoid conflicts with other libraries
 	"use strict";
 	var last_notification = {ACTIVE_NOTIFICATION_LAST};
+	//var last_notification = 0;
+	var avatar_base = '{ACTIVE_NOTIFICATION_AVATAR_BASE}';
 	var autoReloadTimer = null;
 	var docTitle = document.title;
 	<!-- IF UNREAD_NOTIFICATIONS_COUNT -->
 	docTitle = docTitle.substr(docTitle.indexOf(')')+1);
 	<!-- ENDIF -->
 	function active_notifications(){
-		$.getJSON("./app.php/activenotifications/" + last_notification, function (data) {
+		$.getJSON("{ACTIVE_NOTIFICATION_URL}" + last_notification, function (data) {
 			var response = data[0];
 			var unread = response.unread;
 			var notifs = response.notifs;
@@ -31,13 +33,20 @@
 					notification = '<li>\n';
 				}
 				notification = notification + '<a class="notification-block" href="./' + not.U_MARK_READ.substr(8) + '" data-real-url="./' + not.URL.substr(8) + '">\n';
-					if (!not.AVATAR) {
+					/*if (!not.AVATAR) {
 						notification = notification + '<img src="{T_THEME_PATH}/images/no_avatar.gif"></img>\n';
 					}
 					else
 					{
-						notification = notification + '<img src="./' + not.AVATAR.substr(8) + '"></img>\n';
-					}
+						var get_id = $(not.AVATAR).attr('src');
+						get_id = get_id.substr(get_id.indexOf('=')+1);
+						get_id = avatar_base + get_id;
+						$(not.AVATAR).attr('src', get_id);
+						notification = notification + not.AVATAR + '\n';
+					}*/
+					// Force no avatar because I can't find how to set the path
+					notification = notification + '<img src="{T_THEME_PATH}/images/no_avatar.gif"></img>\n';
+					// This is only temp fix
 					notification = notification + '<div class="notification_text">\n';
 						notification = notification + '<p class="notification-title">' + not.FORMATTED_TITLE + '</p>\n';
 						notification = notification + '<p class="notification-reference">' + not.REFERENCE + '</p>\n';
@@ -45,7 +54,7 @@
 					notification = notification + '</div>\n'; 
 				notification = notification + '</a>\n';
 				notification = notification + '</li>\n';
-				
+				console.log(not.AVATAR);
 				output = output + notification;
 			});
 			// Now let us add them

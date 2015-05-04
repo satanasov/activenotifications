@@ -5,14 +5,8 @@ services:
             - @config
             - @user
             - @request
-            - @anavaro.activenotifications.notifyhelper
-    anavaro.activenotifications.notifyhelper:
-        class: anavaro\activenotifications\controller\notifyhelper
-        arguments:
-            - @config
-            - @user
+            - @notification_manager
             - @dbal.conn
-            - @service_container
     anavaro.activenotifications.listener:
         class: anavaro\activenotifications\event\listener
         arguments:
@@ -20,6 +14,8 @@ services:
             - @user
             - @template
             - @request
-            - @anavaro.activenotifications.notifyhelper
+            - @notification_manager
+            - @controller.helper
+            - %core.root_path%
         tags:
             - { name: event.listener }

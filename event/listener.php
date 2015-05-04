@@ -36,23 +36,29 @@ class listener implements EventSubscriberInterface
 	* @param \phpbb\template									$template	Template object
 	* @param \phpbb\activenotifications\controller\notifyhelper	$notifyhelper	notifications helper
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\template\template $template, \phpbb\request\request $request, \anavaro\activenotifications\controller\notifyhelper $notifyhelper)
+	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\template\template $template, \phpbb\request\request $request,
+	\phpbb\notification\manager $notification_manager, \phpbb\controller\helper $helper, $root_path)
 	{
 		$this->config = $config;
 		$this->user = $user;
 		$this->template = $template;
 		$this->request = $request;
-		$this->notifyhelper = $notifyhelper;
+		$this->notification_manager = $notification_manager;
+		$this->helper = $helper;
+		$this->root_path = $root_path;
 	}
 
 	public function setup()
 	{
 		if ($this->user->data['user_id'] != ANONYMOUS)
 		{
-			$last = $this->notifyhelper->get_last_notification();
+			$last = $this->get_last_notification();
+			$last = ($last) ? $last : 0;
 			$this->template->assign_vars(array(
-				'ACTIVE_NOTIFICATION_LAST'	=> ($last) ? $last : 0,
+				'ACTIVE_NOTIFICATION_LAST'	=> $last,
 				'ACTIVE_NOTIFICATION_TIME'	=> $this->config['notification_pull_time'] * 1000,
+				'ACTIVE_NOTIFICATION_URL'	=> substr($this->helper->route('notifications_puller', array('last' => $last)), 0, strlen($last) * -1),
+				'ACTIVE_NOTIFICATION_AVATAR_BASE'	=> 	$this->config['server_protocol'] . $this->config['server_name'] . '/download/file.php?avatar=',
 			));
 		}
 	}
@@ -78,5 +84,15 @@ class listener implements EventSubscriberInterface
 			);
 			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
 		}
+	}
+
+	protected function get_last_notification()
+	{
+		$last_notification = $this->notification_manager->load_notifications(array('limit' => 1));
+		foreach ($last_notification['notifications'] as $notification)
+		{
+			$notifs = $notification->prepare_for_display();
+		}
+		return (int) $notifs['NOTIFICATION_ID'];
 	}
 }
