@@ -36,21 +36,19 @@ class listener implements EventSubscriberInterface
 	* @param \phpbb\template									$template	Template object
 	* @param \phpbb\activenotifications\controller\notifyhelper	$notifyhelper	notifications helper
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\template\template $template, \phpbb\request\request $request,
-	\phpbb\notification\manager $notification_manager, \phpbb\controller\helper $helper, $root_path)
+	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\template\template $template,
+	\phpbb\notification\manager $notification_manager, \phpbb\controller\helper $helper)
 	{
 		$this->config = $config;
 		$this->user = $user;
 		$this->template = $template;
-		$this->request = $request;
 		$this->notification_manager = $notification_manager;
 		$this->helper = $helper;
-		$this->root_path = $root_path;
 	}
 
 	public function setup()
 	{
-		if ($this->user->data['user_id'] != ANONYMOUS)
+		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] == true && $this->user->data['is_bot'] == false)
 		{
 			$last = $this->get_last_notification();
 			$last = ($last) ? $last : 0;
@@ -58,7 +56,7 @@ class listener implements EventSubscriberInterface
 				'ACTIVE_NOTIFICATION_LAST'	=> $last,
 				'ACTIVE_NOTIFICATION_TIME'	=> $this->config['notification_pull_time'] * 1000,
 				'ACTIVE_NOTIFICATION_URL'	=> substr($this->helper->route('notifications_puller', array('last' => $last)), 0, strlen($last) * -1),
-				'ACTIVE_NOTIFICATION_AVATAR_BASE'	=> 	$this->config['server_protocol'] . $this->config['server_name'] . '/download/file.php?avatar=',
+				//'ACTIVE_NOTIFICATION_AVATAR_BASE'	=> 	$this->config['server_protocol'] . $this->config['server_name'] . '/download/file.php?avatar=',
 			));
 		}
 	}

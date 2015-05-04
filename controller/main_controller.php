@@ -42,7 +42,7 @@ class main_controller
 		}
 		else
 		{
-			var_dump($response);
+			//var_dump($response);
 			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
 		}
 	}
@@ -59,7 +59,6 @@ class main_controller
 		$this->db->sql_freeresult($result);
 		$notifications = $this->notification_manager->load_notifications(array(
 			'notification_id'	=> $notifications_new,
-			'user_id'			=> $this->user->data['user_id'],
 			'count_unread'	=> true,
 		));
 		$output = array();

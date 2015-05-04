@@ -13,9 +13,7 @@ services:
             - @config
             - @user
             - @template
-            - @request
             - @notification_manager
             - @controller.helper
-            - %core.root_path%
         tags:
             - { name: event.listener }
