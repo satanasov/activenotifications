@@ -56,6 +56,7 @@ class listener implements EventSubscriberInterface
 				'ACTIVE_NOTIFICATION_LAST'	=> $last,
 				'ACTIVE_NOTIFICATION_TIME'	=> $this->config['notification_pull_time'] * 1000,
 				'ACTIVE_NOTIFICATION_URL'	=> substr($this->helper->route('notifications_puller', array('last' => $last)), 0, strlen($last) * -1),
+				'ACTIVE_NOTIFICATIONS_SUBSTR'	=> $this->config['enable_mod_rewrite'] ? 1 : 8,
 				//'ACTIVE_NOTIFICATION_AVATAR_BASE'	=> 	$this->config['server_protocol'] . $this->config['server_name'] . '/download/file.php?avatar=',
 			));
 		}

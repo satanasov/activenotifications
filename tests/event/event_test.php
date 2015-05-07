@@ -173,6 +173,7 @@ class event_test extends \phpbb_database_test_case
 		$this->user->data['is_registered'] = $is_reg;
 		$this->user->data['is_bot'] = $is_bot;
 		$this->config['notification_pull_time'] = $pull_time;
+		$this->config['enable_mod_rewrite'] = false;
 		$this->set_listener();
 		if ($expected > 0)
 		{
@@ -182,6 +183,7 @@ class event_test extends \phpbb_database_test_case
 					'ACTIVE_NOTIFICATION_LAST' => $last_n,
 					'ACTIVE_NOTIFICATION_TIME' => $time_n,
 					'ACTIVE_NOTIFICATION_URL'	=> false, // This is false becouse we have mock route helper
+					'ACTIVE_NOTIFICATIONS_SUBSTR'	=> 8, // This is false becouse we have mock route helper
 				));
 		}
 		else

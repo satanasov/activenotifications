@@ -5,6 +5,7 @@
 	var last_notification = {ACTIVE_NOTIFICATION_LAST};
 	//var last_notification = 0;
 	var avatar_base = '{ACTIVE_NOTIFICATION_AVATAR_BASE}';
+	var substr = {ACTIVE_NOTIFICATIONS_SUBSTR};
 	var autoReloadTimer = null;
 	var docTitle = document.title;
 	<!-- IF UNREAD_NOTIFICATIONS_COUNT -->
@@ -32,7 +33,7 @@
 				{
 					notification = '<li>\n';
 				}
-				notification = notification + '<a class="notification-block" href="./' + not.U_MARK_READ.substr(8) + '" data-real-url="./' + not.URL.substr(8) + '">\n';
+				notification = notification + '<a class="notification-block" href="./' + not.U_MARK_READ.substr(substr) + '" data-real-url="./' + not.URL.substr(substr) + '">\n';
 					/*if (!not.AVATAR) {
 						notification = notification + '<img src="{T_THEME_PATH}/images/no_avatar.gif"></img>\n';
 					}
@@ -67,6 +68,12 @@
 			{
 				var docTitleWithNote;
 				docTitleWithNote = '(' + unread.toString() + ')' + docTitle;
+				document.title = docTitleWithNote;
+			}
+			else
+			{
+				var docTitleWithNote;
+				docTitleWithNote = docTitle;
 				document.title = docTitleWithNote;
 			}
 		});
