@@ -92,6 +92,13 @@ class listener implements EventSubscriberInterface
 		{
 			$notifs = $notification->prepare_for_display();
 		}
-		return (int) $notifs['NOTIFICATION_ID'];
+		if (isset($notifs))
+		{
+			return (int) $notifs['NOTIFICATION_ID'];
+		}
+		else
+		{
+			return 0;
+		}
 	}
 }
