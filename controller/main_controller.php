@@ -45,8 +45,8 @@ class main_controller
 		}
 		else
 		{
-			var_dump($response);
-			//throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
+			//var_dump($response);
+			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
 		}
 	}
 	protected function get_unread($last)
@@ -72,7 +72,7 @@ class main_controller
 			foreach ($notifications['notifications'] as $notification)
 			{
 				$tmp = $notification->prepare_for_display();
-				if($tmp['U_MARK_READ'] != '')
+				if ($tmp['U_MARK_READ'] != '')
 				{
 					$mark = explode('?', $tmp['U_MARK_READ']);
 					$tmp['U_MARK_READ'] = $this->config['server_protocol'] . $this->config['server_name'] . '/index.php?' . $mark[1];
@@ -82,7 +82,7 @@ class main_controller
 					$url = explode('/', $tmp['URL']);
 					if ($url[0] == '.')
 					{
-						foreach($url as $id => $el)
+						foreach ($url as $id => $el)
 						{
 							if ($el == '.' || $el == '..')
 							{

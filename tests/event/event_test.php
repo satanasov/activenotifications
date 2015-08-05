@@ -183,7 +183,6 @@ class event_test extends \phpbb_database_test_case
 					'ACTIVE_NOTIFICATION_LAST' => $last_n,
 					'ACTIVE_NOTIFICATION_TIME' => $time_n,
 					'ACTIVE_NOTIFICATION_URL'	=> false, // This is false becouse we have mock route helper
-					'ACTIVE_NOTIFICATIONS_SUBSTR'	=> 8, // This is false becouse we have mock route helper
 				));
 		}
 		else
