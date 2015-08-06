@@ -89,6 +89,7 @@ class event_test extends \phpbb_database_test_case
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->request = $this->getMock('\phpbb\request\request');
 	}
 	
 	// Let's create listener
@@ -99,7 +100,8 @@ class event_test extends \phpbb_database_test_case
 			$this->user,
 			$this->template,
 			$this->phpbb_notifications,
-			$this->controller_helper
+			$this->controller_helper,
+			$this->request
 		);
 	}
 	/**
@@ -174,6 +176,9 @@ class event_test extends \phpbb_database_test_case
 		$this->user->data['is_bot'] = $is_bot;
 		$this->config['notification_pull_time'] = $pull_time;
 		$this->config['enable_mod_rewrite'] = false;
+		$this->config['cookie_domain'] = 'localhost';
+		$this->config['cookie_name'] = 'phpbb3_asd_obj';
+		$this->config['cookie_path'] = '/';
 		$this->set_listener();
 		if ($expected > 0)
 		{
@@ -183,6 +188,9 @@ class event_test extends \phpbb_database_test_case
 					'ACTIVE_NOTIFICATION_LAST' => $last_n,
 					'ACTIVE_NOTIFICATION_TIME' => $time_n,
 					'ACTIVE_NOTIFICATION_URL'	=> false, // This is false becouse we have mock route helper
+					'ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN'	=> 'localhost',
+					'ACTIVE_NOTIFICATIONS_COOKIE_NAME'	=> 'phpbb3_asd_obj_an',
+					'ACTIVE_NOTIFICATIONS_COOKIE_PATH'	=> '/'
 				));
 		}
 		else
