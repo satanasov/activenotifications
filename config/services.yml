@@ -15,5 +15,6 @@ services:
             - @template
             - @notification_manager
             - @controller.helper
+            - @request
         tags:
             - { name: event.listener }

@@ -37,19 +37,23 @@ class listener implements EventSubscriberInterface
 	* @param \phpbb\activenotifications\controller\notifyhelper	$notifyhelper	notifications helper
 	*/
 	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\template\template $template,
-	\phpbb\notification\manager $notification_manager, \phpbb\controller\helper $helper)
+	\phpbb\notification\manager $notification_manager, \phpbb\controller\helper $helper, \phpbb\request\request $request)
 	{
 		$this->config = $config;
 		$this->user = $user;
 		$this->template = $template;
 		$this->notification_manager = $notification_manager;
 		$this->helper = $helper;
+		$this->request = $request;
 	}
 
 	public function setup()
 	{
 		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] == true && $this->user->data['is_bot'] == false)
 		{
+			// Work with cookies
+			$cookie = $this->request->variable($this->config['cookie_name'] . '_an', '', true, \phpbb\request\request_interface::COOKIE);
+
 			$last = $this->get_last_notification();
 			$last = ($last) ? $last : 0;
 			$this->template->assign_vars(array(
@@ -57,6 +61,9 @@ class listener implements EventSubscriberInterface
 				'ACTIVE_NOTIFICATION_TIME'	=> $this->config['notification_pull_time'] * 1000,
 				'ACTIVE_NOTIFICATION_URL'	=> substr($this->helper->route('notifications_puller', array('last' => $last)), 0, strlen($last) * -1),
 				//'ACTIVE_NOTIFICATION_AVATAR_BASE'	=> 	$this->config['server_protocol'] . $this->config['server_name'] . '/download/file.php?avatar=',
+				'ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN'	=> $this->config['cookie_domain'],
+				'ACTIVE_NOTIFICATIONS_COOKIE_NAME'	=> $this->config['cookie_name'] . '_an',
+				'ACTIVE_NOTIFICATIONS_COOKIE_PATH'	=> $this->config['cookie_path'],
 			));
 		}
 	}
