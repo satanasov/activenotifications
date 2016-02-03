@@ -75,7 +75,7 @@ class main_controller
 				if ($tmp['U_MARK_READ'] != '')
 				{
 					$mark = explode('?', $tmp['U_MARK_READ']);
-					$tmp['U_MARK_READ'] = $this->config['server_protocol'] . $this->config['server_name'] . '/index.php?' . $mark[1];
+					$tmp['U_MARK_READ'] = $this->config['server_protocol'] . $this->config['server_name'] . $this->config['script_path'] . '/index.php?' . $mark[1];
 				}
 				if ($tmp['URL'] != '')
 				{
@@ -89,7 +89,7 @@ class main_controller
 								unset($url[$id]);
 							}
 						}
-						$tmp['URL'] = $this->config['server_protocol'] . $this->config['server_name'] . '/' . implode('/', $url);
+						$tmp['URL'] = $this->config['server_protocol'] . $this->config['server_name'] . $this->config['script_path'] . '/' . implode('/', $url);
 					}
 				}
 				$output['notifs'][] = $tmp;
