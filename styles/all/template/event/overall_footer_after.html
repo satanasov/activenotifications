@@ -130,7 +130,7 @@
 	var autoReloadTimer = null;
 	var docTitle = document.title;
 	<!-- IF UNREAD_NOTIFICATIONS_COUNT -->
-	docTitle = docTitle.substr(docTitle.indexOf(')')+1);
+	docTitle = docTitle.substr(docTitle.indexOf(')') + 2);
 	<!-- ENDIF -->
 	function active_notifications(){
 		// we need time
@@ -144,10 +144,14 @@
 			// Remove last update time
 			$.removeCookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time');
 			// Set Lock so other instance may know for the request and not do it again
-			$.getJSON("{ACTIVE_NOTIFICATION_URL}" + last_notification, function (response) {
+			$.getJSON("{ACTIVE_NOTIFICATION_URL}" + last_notification).done(function(response) {
 				parse(response);
 				// Update cookie with the info
 				$.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}', response, { expires: 1 });
+			}).fail(function(jqXHR) {
+				if (jqXHR.status == 403) {
+					clearTimeout(autoReloadTimer);
+				}
 			});
 			$.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time', now, { expires: 1 });
 		}
@@ -208,30 +212,18 @@
 		// Change value of notification counter
 		$('#notification_list_button strong').html(unread.toString());
 		// Now let's set window title
-		if (unread > 0)
-		{
-			var docTitleWithNote;
-			docTitleWithNote = '(' + unread.toString() + ')' + docTitle;
-			document.title = docTitleWithNote;
-		}
-		else
-		{
-			var docTitleWithNote;
-			docTitleWithNote = docTitle;
-			document.title = docTitleWithNote;
+		document.title = docTitle;
+		if (unread > 0) {
+			document.title = '(' + unread.toString() + ') ' + document.title;
 		}
 	}
 	function autoReload() {
-		if (autoReloadTimer) { clearTimeout(autoReloadTimer); }
 		autoReloadTimer = setTimeout(function() {
-			console.log(last_notification);
 			active_notifications();
 			autoReload();
 		}, {ACTIVE_NOTIFICATION_TIME});
 	}
-	$(document).ready(function() {
-		autoReload();
-	});
+	$(document).ready(autoReload);
 })(jQuery); // Avoid conflicts with other libraries
 </script>
 <!-- ENDIF -->
