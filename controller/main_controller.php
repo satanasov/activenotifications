@@ -56,7 +56,7 @@ class main_controller
 		$this->user->session_begin(false);
 		$response = $this->get_unread($last);
 
-		return new JsonResponse(array($response));
+		return new JsonResponse($response);
 	}
 
 	/**

@@ -144,8 +144,7 @@
 			// Remove last update time
 			$.removeCookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time');
 			// Set Lock so other instance may know for the request and not do it again
-			$.getJSON("{ACTIVE_NOTIFICATION_URL}" + last_notification, function (data) {
-				var response = data[0];
+			$.getJSON("{ACTIVE_NOTIFICATION_URL}" + last_notification, function (response) {
 				parse(response);
 				// Update cookie with the info
 				$.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}', response, { expires: 1 });
@@ -197,7 +196,7 @@
 			notification = notification + '<p class="notification-title">' + not.FORMATTED_TITLE + '</p>\n';
 			notification = notification + '<p class="notification-reference">' + not.REFERENCE + '</p>\n';
 			notification = notification + '<p class="notification-time">' + not.TIME + '</p>\n';
-			notification = notification + '</div>\n'; 
+			notification = notification + '</div>\n';
 			notification = notification + '</a>\n';
 			notification = notification + '</li>\n';
 			//console.log(not.U_MARK_READ.substr(8));
