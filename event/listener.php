@@ -53,11 +53,11 @@ class listener implements EventSubscriberInterface
 	 * @param \phpbb\controller\helper		$helper					Controller helper
 	 */
 	public function __construct(
-		\phpbb\config\config				$config,
-		\phpbb\user							$user,
-		\phpbb\template\template			$template,
-		\phpbb\notification\manager			$notification_manager,
-		\phpbb\controller\helper			$helper
+		\phpbb\config\config $config,
+		\phpbb\user $user,
+		\phpbb\template\template $template,
+		\phpbb\notification\manager $notification_manager,
+		\phpbb\controller\helper $helper
 	)
 	{
 		$this->config						= $config;

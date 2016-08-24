@@ -45,12 +45,12 @@ class main_controller
 	 * @param \phpbb\template\template			$template
 	 */
 	public function __construct(
-		\phpbb\config\config					$config,
-		\phpbb\user								$user,
-		\phpbb\request\request					$request,
-		\phpbb\notification\manager				$notification_manager,
-		\phpbb\db\driver\driver_interface		$db,
-		\phpbb\template\template				$template
+		\phpbb\config\config $config,
+		\phpbb\user $user,
+		\phpbb\request\request $request,
+		\phpbb\notification\manager $notification_manager,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\template\template $template
 	)
 	{
 		$this->config							= $config;
