@@ -10,8 +10,26 @@
 
 namespace anavaro\activenotifications\controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use phpbb\exception\http_exception;
+
 class main_controller
 {
+	/** @var \phpbb\config\config */
+	protected $config;
+
+	/** @var \phpbb\user */
+	protected $user;
+
+	/** @var \phpbb\request\request */
+	protected $request;
+
+	/** @var \phpbb\notification\manager */
+	protected $notification_manager;
+
+	/** @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
 	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\request\request $request, \phpbb\notification\manager $notification_manager,
 	\phpbb\db\driver\driver_interface $db)
 	{
@@ -22,39 +40,35 @@ class main_controller
 		$this->db = $db;
 	}
 
+	/**
+	 * @param int $last
+	 * @return JsonResponse
+	 */
 	public function base($last)
 	{
-		//$this->user->session_begin(false);
-		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] == true && $this->user->data['is_bot'] == false)
+		if ($this->user->data['user_id'] == ANONYMOUS || !$this->user->data['is_registered'] || $this->user->data['is_bot'] || !$this->request->is_ajax())
 		{
-			$this->user->session_begin(false);
-			$response = $this->get_unread($last);
-			// Send a JSON response if an AJAX request was used
-		}
-		else
-		{
-			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
+			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
-		if ($this->request->is_ajax())
-		{
-			$this->user->session_begin(false);
-			return new \Symfony\Component\HttpFoundation\JsonResponse(array(
-				$response
-			));
-		}
-		else
-		{
-			//var_dump($response);
-			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
-		}
+		// Send a JSON response if an AJAX request was used
+
+		$this->user->session_begin(false);
+		$response = $this->get_unread($last);
+
+		return new JsonResponse(array($response));
 	}
+
+	/**
+	 * @param int $last
+	 * @return array
+	 */
 	protected function get_unread($last)
 	{
 		$this->user->session_begin(false);
 		$notifications_new = array();
 		$sql = 'SELECT notification_id FROM ' . NOTIFICATIONS_TABLE . '
-		WHERE notification_id > ' . $last . ' AND user_id = ' . $this->user->data['user_id'];
+			WHERE notification_id > ' . $last . ' AND user_id = ' . $this->user->data['user_id'];
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
@@ -63,7 +77,7 @@ class main_controller
 		$this->db->sql_freeresult($result);
 		$notifications = $this->notification_manager->load_notifications(array(
 			'notification_id'	=> $notifications_new,
-			'count_unread'	=> true,
+			'count_unread'		=> true,
 		));
 		$output = array();
 		$output['unread'] = $notifications['unread_count'];

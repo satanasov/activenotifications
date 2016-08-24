@@ -18,6 +18,24 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class listener implements EventSubscriberInterface
 {
+	/** @var \phpbb\config\config */
+	protected $config;
+
+	/** @var \phpbb\user */
+	protected $user;
+
+	/** @var \phpbb\template\template */
+	protected $template;
+
+	/** @var \phpbb\notification\manager */
+	protected $notification_manager;
+
+	/** @var \phpbb\controller\helper */
+	protected $helper;
+
+	 /** @var \phpbb\request\request */
+	protected $request;
+
 	static public function getSubscribedEvents()
 	{
 		return array(
@@ -31,10 +49,12 @@ class listener implements EventSubscriberInterface
 	* NOTE: The parameters of this method must match in order and type with
 	* the dependencies defined in the services.yml file for this service.
 	*
-	* @param \phpbb\config										$config		Config object
-	* @param \phpbb\user										$user		User object
-	* @param \phpbb\template									$template	Template object
-	* @param \phpbb\activenotifications\controller\notifyhelper	$notifyhelper	notifications helper
+	* @param \phpbb\config\config			$config					Config object
+	* @param \phpbb\user					$user					User object
+	* @param \phpbb\template\template		$template				Template object
+	* @param \phpbb\notification\manager	$notification_manager	Notifications manager
+	* @param \phpbb\controller\helper		$helper					Controller helper
+	* @param \phpbb\request\request			$request				Request object
 	*/
 	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\template\template $template,
 	\phpbb\notification\manager $notification_manager, \phpbb\controller\helper $helper, \phpbb\request\request $request)
@@ -49,7 +69,7 @@ class listener implements EventSubscriberInterface
 
 	public function setup()
 	{
-		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] == true && $this->user->data['is_bot'] == false)
+		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] && !$this->user->data['is_bot'])
 		{
 			// Work with cookies
 			$cookie = $this->request->variable($this->config['cookie_name'] . '_an', '', true, \phpbb\request\request_interface::COOKIE);
