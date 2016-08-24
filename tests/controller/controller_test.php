@@ -1,12 +1,12 @@
 <?php
+
 /**
-*
-* Advanced Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2015 Lucifer <https://www.anavaro.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * @package phpBB Extension - Active Notifications
+ * @copyright (c) 2015 Lucifer <https://www.anavaro.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace anavaro\activenotifications\tests\controller;
 
@@ -21,7 +21,7 @@ class controller_test extends \phpbb_database_test_case
 	{
 		return array('anavaro/activenotifications');
 	}
-	
+
 	protected $db;
 
 	/**
@@ -54,7 +54,7 @@ class controller_test extends \phpbb_database_test_case
 			$phpbb_root_path,
 			$phpEx
 		);
-		
+
 		$user_loader = new \phpbb\user_loader($this->db, $phpbb_root_path, $phpEx, USERS_TABLE);
 		// Event dispatcher
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
@@ -147,8 +147,6 @@ class controller_test extends \phpbb_database_test_case
 				403,
 				'NO_AUTH_OPERATION',
 			),
-			
-			
 		);
 	}
 	/**

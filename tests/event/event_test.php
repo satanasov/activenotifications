@@ -1,12 +1,12 @@
 <?php
+
 /**
-*
-* Advanced Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2015 Lucifer <https://www.anavaro.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * @package phpBB Extension - Active Notifications
+ * @copyright (c) 2015 Lucifer <https://www.anavaro.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace anavaro\activenotifications\tests\event;
 
@@ -21,7 +21,7 @@ class event_test extends \phpbb_database_test_case
 	{
 		return array('anavaro/activenotifications');
 	}
-	
+
 	protected $db;
 
 	/**
@@ -53,7 +53,7 @@ class event_test extends \phpbb_database_test_case
 			$phpbb_root_path,
 			$phpEx
 		);
-		
+
 		$user_loader = new \phpbb\user_loader($this->db, $phpbb_root_path, $phpEx, USERS_TABLE);
 		// Event dispatcher
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
@@ -75,15 +75,15 @@ class event_test extends \phpbb_database_test_case
 			$this->phpbb_container, $user_loader, $this->config, $phpbb_dispatcher, $this->db, $cache, $user,
 			$phpbb_root_path, $phpEx,
 			NOTIFICATION_TYPES_TABLE, NOTIFICATIONS_TABLE, USER_NOTIFICATIONS_TABLE);
-			
+
 		$user = new \phpbb_mock_user;
 		$user->optionset('viewcensors', false);
 		$user->style['style_path'] = 'prosilver';
-		
+
 		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
-			
+
 		$phpbb_container = new \phpbb_mock_container_builder();
 		$phpbb_container->set('path_helper', $phpbb_path_helper);
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
@@ -91,7 +91,7 @@ class event_test extends \phpbb_database_test_case
 			->getMock();
 		$this->request = $this->getMock('\phpbb\request\request');
 	}
-	
+
 	// Let's create listener
 	protected function set_listener()
 	{
