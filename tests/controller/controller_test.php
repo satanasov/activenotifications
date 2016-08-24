@@ -107,15 +107,16 @@ class controller_test extends \phpbb_database_test_case
 	}
 
 	// Some issue prevents the test from requesting notifications (Memmory overflows) so we do only 1 valid tests for return
-	public function test_controller($user_id = 2, $is_registered = true, $mode = true, $notification = 0, $status_code = 200, $unreads = 0, $new = 0)
+	public function test_controller($user_id = 2, $is_registered = true, $mode = true, $notification = 0, $status_code = 200, $last = 0, $unreads = 0, $new = 0)
 	{
 		$controller = $this->get_controller($user_id, $is_registered, $mode);
 		$response = $controller->base($notification);
 		$this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
 		$this->assertEquals($status_code, $response->getStatusCode());
-		$content = json_decode($response->getContent());
+		$content = json_decode($response->getContent(), true);
+		$this->assertEquals($last, $content['last']);
 		$this->assertEquals($unreads, $content['unread']);
-		$this->assertEquals($new, count($content['notifs']));
+		$this->assertEquals($new, substr_count($content['notifications'], '<div class="notification_text">'));
 	}
 
 	/**
