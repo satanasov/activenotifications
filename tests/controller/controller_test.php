@@ -45,6 +45,8 @@ class controller_test extends \phpbb_database_test_case
 		$this->config = new \phpbb\config\config(array(
 			'notification_pull_time' => 60,
 		));
+		$this->template = $this->getMockBuilder('\phpbb\template\template')
+			->getMock();
 		// TBD
 		$auth = $this->getMock('\phpbb\auth\auth');
 		$cache = new \phpbb\cache\service(
@@ -99,7 +101,8 @@ class controller_test extends \phpbb_database_test_case
 			$user,
 			$request,
 			$this->phpbb_notifications,
-			$this->db
+			$this->db,
+			$this->template
 		);
 	}
 

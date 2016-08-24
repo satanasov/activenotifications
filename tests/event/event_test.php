@@ -89,7 +89,6 @@ class event_test extends \phpbb_database_test_case
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->request = $this->getMock('\phpbb\request\request');
 	}
 
 	// Let's create listener
@@ -100,8 +99,7 @@ class event_test extends \phpbb_database_test_case
 			$this->user,
 			$this->template,
 			$this->phpbb_notifications,
-			$this->controller_helper,
-			$this->request
+			$this->controller_helper
 		);
 	}
 	/**
