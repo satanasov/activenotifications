@@ -128,10 +128,6 @@
 	//var last_notification = 0;
 	var avatar_base = '{ACTIVE_NOTIFICATION_AVATAR_BASE}';
 	var autoReloadTimer = null;
-	var docTitle = document.title;
-	<!-- IF UNREAD_NOTIFICATIONS_COUNT -->
-	docTitle = docTitle.substr(docTitle.indexOf(')') + 2);
-	<!-- ENDIF -->
 	function active_notifications(){
 		// we need time
 		var t = new Date();
@@ -209,13 +205,8 @@
 		});
 		// Now let us add them
 		$('.dropdown-contents ul li:first').before( output );
-		// Change value of notification counter
-		$('#notification_list_button strong').html(unread.toString());
-		// Now let's set window title
-		document.title = docTitle;
-		if (unread > 0) {
-			document.title = '(' + unread.toString() + ') ' + document.title;
-		}
+		// Change value of notification counter and set window title
+		phpbb.markNotifications($(), unread);
 	}
 	function autoReload() {
 		autoReloadTimer = setTimeout(function() {
