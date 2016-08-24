@@ -30,14 +30,34 @@ class main_controller
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
-	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\request\request $request, \phpbb\notification\manager $notification_manager,
-	\phpbb\db\driver\driver_interface $db)
+	/** @var \phpbb\template\template */
+	protected $template;
+
+	/**
+	 * Constructor
+	 *
+	 * @param \phpbb\config\config				$config
+	 * @param \phpbb\user						$user
+	 * @param \phpbb\request\request			$request
+	 * @param \phpbb\notification\manager		$notification_manager
+	 * @param \phpbb\db\driver\driver_interface	$db
+	 * @param \phpbb\template\template			$template
+	 */
+	public function __construct(
+		\phpbb\config\config					$config,
+		\phpbb\user								$user,
+		\phpbb\request\request					$request,
+		\phpbb\notification\manager				$notification_manager,
+		\phpbb\db\driver\driver_interface		$db,
+		\phpbb\template\template				$template
+	)
 	{
-		$this->config = $config;
-		$this->user = $user;
-		$this->request = $request;
-		$this->notification_manager = $notification_manager;
-		$this->db = $db;
+		$this->config							= $config;
+		$this->user								= $user;
+		$this->request							= $request;
+		$this->notification_manager				= $notification_manager;
+		$this->db								= $db;
+		$this->template							= $template;
 	}
 
 	/**
@@ -51,12 +71,37 @@ class main_controller
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
-		// Send a JSON response if an AJAX request was used
+		$last = (int) $last;
 
-		$this->user->session_begin(false);
-		$response = $this->get_unread($last);
+		// Fix avatars & smilies
+		if (!defined('PHPBB_USE_BOARD_URL_PATH'))
+		{
+			define('PHPBB_USE_BOARD_URL_PATH', true);
+		}
 
-		return new JsonResponse($response);
+		$notifications_content = '';
+		$notifications = $this->get_unread($last);
+
+		if (!empty($notifications['notifications']))
+		{
+			$this->template->assign_vars(array(
+				'T_THEME_PATH' => generate_board_url() . '/styles/' . rawurlencode($this->user->style['style_path']) . '/theme',
+			));
+
+			foreach ($notifications['notifications'] as $notification)
+			{
+				$last = max($last, $notification->notification_id);
+				$this->template->assign_block_vars('notifications', $notification->prepare_for_display());
+			}
+
+			$notifications_content = $this->render_template('notifications.html');
+		}
+
+		return new JsonResponse(array(
+			'last'			=> $last,
+			'unread'		=> $notifications['unread_count'],
+			'notifications'	=> $notifications_content,
+		));
 	}
 
 	/**
@@ -65,50 +110,42 @@ class main_controller
 	 */
 	protected function get_unread($last)
 	{
-		$this->user->session_begin(false);
 		$notifications_new = array();
-		$sql = 'SELECT notification_id FROM ' . NOTIFICATIONS_TABLE . '
-			WHERE notification_id > ' . $last . ' AND user_id = ' . $this->user->data['user_id'];
+
+		$sql = 'SELECT notification_id
+			FROM ' . NOTIFICATIONS_TABLE . '
+			WHERE notification_id > ' . (int) $last . '
+				AND user_id = ' . (int) $this->user->data['user_id'];
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$notifications_new[] = (int) $row['notification_id'];
 		}
 		$this->db->sql_freeresult($result);
-		$notifications = $this->notification_manager->load_notifications(array(
+
+		// Ad non-existent notification so that no new notifications are returned
+		if (!$notifications_new)
+		{
+			$notifications_new[] = 0;
+		}
+
+		return $this->notification_manager->load_notifications(array(
 			'notification_id'	=> $notifications_new,
 			'count_unread'		=> true,
 		));
-		$output = array();
-		$output['unread'] = $notifications['unread_count'];
-		if (!empty($notifications_new))
-		{
-			foreach ($notifications['notifications'] as $notification)
-			{
-				$tmp = $notification->prepare_for_display();
-				if ($tmp['U_MARK_READ'] != '')
-				{
-					$mark = explode('?', $tmp['U_MARK_READ']);
-					$tmp['U_MARK_READ'] = $this->config['server_protocol'] . $this->config['server_name'] . $this->config['script_path'] . '/index.php?' . $mark[1];
-				}
-				if ($tmp['URL'] != '')
-				{
-					$url = explode('/', $tmp['URL']);
-					if ($url[0] == '.')
-					{
-						foreach ($url as $id => $el)
-						{
-							if ($el == '.' || $el == '..')
-							{
-								unset($url[$id]);
-							}
-						}
-						$tmp['URL'] = $this->config['server_protocol'] . $this->config['server_name'] . $this->config['script_path'] . '/' . implode('/', $url);
-					}
-				}
-				$output['notifs'][] = $tmp;
-			}
-		}
-		return $output;
+	}
+
+	/**
+	 * Renders a template file and returns it
+	 *
+	 * @param string $template_file
+	 * @return string
+	 */
+	public function render_template($template_file)
+	{
+		$this->template->set_filenames(array('body' => $template_file));
+		$content = $this->template->assign_display('body', '', true);
+
+		return trim(str_replace(array("\r", "\n"), '', $content));
 	}
 }

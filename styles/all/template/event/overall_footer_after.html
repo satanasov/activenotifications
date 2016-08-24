@@ -125,7 +125,7 @@
 	$.cookie.defaults.path = '{ACTIVE_NOTIFICATIONS_COOKIE_PATH}';
 	$.cookie.defaults.domain = '{ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN}';
 	var last_notification = {ACTIVE_NOTIFICATION_LAST};
-	//var last_notification = 0;
+	var last_unread = $('strong', '#notification_list_button').html();
 	var avatar_base = '{ACTIVE_NOTIFICATION_AVATAR_BASE}';
 	var autoReloadTimer = null;
 	function active_notifications(){
@@ -158,55 +158,19 @@
 	}
 	function parse(response)
 	{
-		var unread = response.unread;
-		var notifs = response.notifs;
-		var output = '';
-		// Let's build new notifications
-		$(notifs).each(function () {
-			var not = $(this)[0];
-			if (not.NOTIFICATION_ID > last_notification)
-			{
-				last_notification = not.NOTIFICATION_ID;
-			}
-			var notification = '';
-			if ( not.UNREAD )
-			{
-				notification = '<li class=" bg2">\n';
-			}
-			else
-			{
-				notification = '<li>\n';
-			}
-			notification = notification + '<a class="notification-block" href="' + not.U_MARK_READ + '" data-real-url="' + not.URL + '">\n';
-			/*if (!not.AVATAR) {
-				notification = notification + '<img src="{T_THEME_PATH}/images/no_avatar.gif"></img>\n';
-			}
-			else
-			{
-				var get_id = $(not.AVATAR).attr('src');
-				get_id = get_id.substr(get_id.indexOf('=')+1);
-				get_id = avatar_base + get_id;
-				$(not.AVATAR).attr('src', get_id);
-				notification = notification + not.AVATAR + '\n';
-			}*/
-			// Force no avatar because I can't find how to set the path
-			notification = notification + '<img src="{T_THEME_PATH}/images/no_avatar.gif"></img>\n';
-			// This is only temp fix
-			notification = notification + '<div class="notification_text">\n';
-			notification = notification + '<p class="notification-title">' + not.FORMATTED_TITLE + '</p>\n';
-			notification = notification + '<p class="notification-reference">' + not.REFERENCE + '</p>\n';
-			notification = notification + '<p class="notification-time">' + not.TIME + '</p>\n';
-			notification = notification + '</div>\n';
-			notification = notification + '</a>\n';
-			notification = notification + '</li>\n';
-			//console.log(not.U_MARK_READ.substr(8));
-			//console.log(not.URL.substr(8));
-			output = output + notification;
-		});
-		// Now let us add them
-		$('.dropdown-contents ul li:first').before( output );
+		last_notification = response.last;
+
 		// Change value of notification counter and set window title
-		phpbb.markNotifications($(), unread);
+		if (last_unread != response.unread) {
+			last_unread = response.unread;
+			phpbb.markNotifications($(), last_unread);
+		}
+
+		// Add notifications
+		if (response.notifications) {
+			$('.dropdown-contents ul li:first').before($());
+			phpbb.lazyLoadAvatars();
+		}
 	}
 	function autoReload() {
 		autoReloadTimer = setTimeout(function() {

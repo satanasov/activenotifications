@@ -45,26 +45,32 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Constructor
-	* NOTE: The parameters of this method must match in order and type with
-	* the dependencies defined in the services.yml file for this service.
-	*
-	* @param \phpbb\config\config			$config					Config object
-	* @param \phpbb\user					$user					User object
-	* @param \phpbb\template\template		$template				Template object
-	* @param \phpbb\notification\manager	$notification_manager	Notifications manager
-	* @param \phpbb\controller\helper		$helper					Controller helper
-	* @param \phpbb\request\request			$request				Request object
-	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\template\template $template,
-	\phpbb\notification\manager $notification_manager, \phpbb\controller\helper $helper, \phpbb\request\request $request)
+	 * Constructor
+	 * NOTE: The parameters of this method must match in order and type with
+	 * the dependencies defined in the services.yml file for this service.
+	 *
+	 * @param \phpbb\config\config			$config					Config object
+	 * @param \phpbb\user					$user					User object
+	 * @param \phpbb\template\template		$template				Template object
+	 * @param \phpbb\notification\manager	$notification_manager	Notifications manager
+	 * @param \phpbb\controller\helper		$helper					Controller helper
+	 * @param \phpbb\request\request		$request				Request object
+	 */
+	public function __construct(
+		\phpbb\config\config				$config,
+		\phpbb\user							$user,
+		\phpbb\template\template			$template,
+		\phpbb\notification\manager			$notification_manager,
+		\phpbb\controller\helper			$helper,
+		\phpbb\request\request				$request
+	)
 	{
-		$this->config = $config;
-		$this->user = $user;
-		$this->template = $template;
-		$this->notification_manager = $notification_manager;
-		$this->helper = $helper;
-		$this->request = $request;
+		$this->config						= $config;
+		$this->user							= $user;
+		$this->template						= $template;
+		$this->notification_manager			= $notification_manager;
+		$this->helper						= $helper;
+		$this->request						= $request;
 	}
 
 	public function setup()
