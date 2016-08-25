@@ -95,7 +95,7 @@ class main_controller
 				$this->template->assign_block_vars('notifications', $notification->prepare_for_display());
 			}
 
-			$notifications_content = $this->render_template('notifications.html');
+			$notifications_content = $this->render_template('notification_dropdown.html');
 		}
 
 		return new JsonResponse(array(
@@ -124,7 +124,7 @@ class main_controller
 		}
 		$this->db->sql_freeresult($result);
 
-		// Ad non-existent notification so that no new notifications are returned
+		// Add non-existent notification so that no new notifications are returned
 		if (!$notifications_new)
 		{
 			$notifications_new[] = 0;

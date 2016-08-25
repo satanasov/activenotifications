@@ -167,7 +167,7 @@
 
 		// Add notifications
 		if (response.notifications) {
-			$('.dropdown-contents ul li:first').before($());
+			$(response.notifications).find('ul:last').children('li').insertBefore('.dropdown-contents ul li:first');
 			phpbb.lazyLoadAvatars();
 		}
 	}
