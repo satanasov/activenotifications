@@ -96,13 +96,22 @@ class controller_test extends \phpbb_database_test_case
 			->will($this->returnValue($ajax)
 		);
 
+		$path_helper = new \phpbb\path_helper(
+			new \phpbb\symfony_request($request),
+			new \phpbb\filesystem(),
+			$request,
+			$phpbb_root_path,
+			$phpEx
+		);
+
 		return new \anavaro\activenotifications\controller\main_controller(
 			$this->config,
 			$user,
 			$request,
 			$this->phpbb_notifications,
 			$this->db,
-			$this->template
+			$this->template,
+			$path_helper
 		);
 	}
 

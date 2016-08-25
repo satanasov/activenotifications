@@ -8,6 +8,7 @@ services:
             - @notification_manager
             - @dbal.conn
             - @template
+            - @path_helper
     anavaro.activenotifications.listener:
         class: anavaro\activenotifications\event\listener
         arguments:

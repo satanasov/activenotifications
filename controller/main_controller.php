@@ -34,6 +34,9 @@ class main_controller
 	/** @var \phpbb\template\template */
 	protected $template;
 
+	/** @var \phpbb\path_helper */
+	protected $path_helper;
+
 	/**
 	 * Constructor
 	 *
@@ -50,7 +53,8 @@ class main_controller
 		\phpbb\request\request $request,
 		\phpbb\notification\manager $notification_manager,
 		\phpbb\db\driver\driver_interface $db,
-		\phpbb\template\template $template
+		\phpbb\template\template $template,
+		\phpbb\path_helper $path_helper
 	)
 	{
 		$this->config							= $config;
@@ -59,6 +63,7 @@ class main_controller
 		$this->notification_manager				= $notification_manager;
 		$this->db								= $db;
 		$this->template							= $template;
+		$this->path_helper						= $path_helper;
 	}
 
 	/**
@@ -92,7 +97,12 @@ class main_controller
 			foreach ($notifications['notifications'] as $notification)
 			{
 				$last = max($last, $notification->notification_id);
-				$this->template->assign_block_vars('notifications', $notification->prepare_for_display());
+
+				$notification_for_display = $notification->prepare_for_display();
+				$notification_for_display['URL'] = $this->relative_to_absolute_url($notification_for_display['URL']);
+				$notification_for_display['U_MARK_READ'] = $this->relative_to_absolute_url($notification_for_display['U_MARK_READ']);
+
+				$this->template->assign_block_vars('notifications', $notification_for_display);
 			}
 
 			$notifications_content = $this->render_template('notification_dropdown.html');
@@ -142,11 +152,45 @@ class main_controller
 	 * @param string $template_file
 	 * @return string
 	 */
-	public function render_template($template_file)
+	protected function render_template($template_file)
 	{
 		$this->template->set_filenames(array('body' => $template_file));
 		$content = $this->template->assign_display('body', '', true);
 
 		return trim(str_replace(array("\r", "\n"), '', $content));
+	}
+
+	/**
+	 * Removes all ../ from the beginning of the $url and prepends the board url.
+	 *
+	 * Example
+	 *  in: "./../index.php"
+	 *  out: "http://example-board.net/index.php"
+	 *
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	protected function relative_to_absolute_url($url)
+	{
+		// Remove leading ../
+		$url = $this->path_helper->remove_web_root_path($url);
+
+		// Remove leading . if present
+		if ($url !== '' && $url[0] === '.')
+		{
+			$url = substr($url, 1);
+		}
+
+		// Prepend / if not presend
+		if ($url !== '' && $url[0] !== '/')
+		{
+			$url = '/' . $url;
+		}
+
+		// Prepend board url
+		$url = generate_board_url() . $url;
+
+		return $url;
 	}
 }
