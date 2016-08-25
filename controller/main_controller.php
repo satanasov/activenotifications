@@ -46,6 +46,7 @@ class main_controller
 	 * @param \phpbb\notification\manager		$notification_manager
 	 * @param \phpbb\db\driver\driver_interface	$db
 	 * @param \phpbb\template\template			$template
+	 * @param \phpbb\path_helper				$path_helper
 	 */
 	public function __construct(
 		\phpbb\config\config $config,
