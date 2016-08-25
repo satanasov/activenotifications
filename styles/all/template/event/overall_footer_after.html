@@ -126,6 +126,7 @@
 	$.cookie.defaults.domain = '{ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN}';
 	var last_notification = {ACTIVE_NOTIFICATION_LAST};
 	var last_unread = $('strong', '#notification_list_button').html();
+	var sessionLength = {ACTIVE_NOTIFICATION_SESSION_LENGTH};
 	var autoReloadTimer = null;
 	function active_notifications(){
 		// we need time
@@ -143,10 +144,8 @@
 				parse(response);
 				// Update cookie with the info
 				$.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}', response, { expires: 1 });
-			}).fail(function(jqXHR) {
-				if (jqXHR.status == 403) {
-					clearTimeout(autoReloadTimer);
-				}
+			}).fail(function() {
+				clearTimeout(autoReloadTimer);
 			});
 			$.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time', now, { expires: 1 });
 		}
@@ -174,7 +173,10 @@
 	function autoReload() {
 		autoReloadTimer = setTimeout(function() {
 			active_notifications();
-			autoReload();
+			sessionLength -= {ACTIVE_NOTIFICATION_TIME};
+			if (sessionLength > 0) {
+				autoReload();
+			}
 		}, {ACTIVE_NOTIFICATION_TIME});
 	}
 	$(document).ready(autoReload);

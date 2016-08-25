@@ -77,7 +77,8 @@ class listener implements EventSubscriberInterface
 			$last = $this->get_last_notification();
 			$this->template->assign_vars(array(
 				'ACTIVE_NOTIFICATION_LAST'				=> $last,
-				'ACTIVE_NOTIFICATION_TIME'				=> $this->config['notification_pull_time'] * 1000,
+				'ACTIVE_NOTIFICATION_TIME'				=> 1000 * $this->config['notification_pull_time'],
+				'ACTIVE_NOTIFICATION_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
 				'ACTIVE_NOTIFICATION_URL'				=> substr($this->helper->route('notifications_puller', array('last' => $last)), 0, -strlen($last)),
 				'ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN'	=> $this->config['cookie_domain'],
 				'ACTIVE_NOTIFICATIONS_COOKIE_NAME'		=> $this->config['cookie_name'] . '_an',
