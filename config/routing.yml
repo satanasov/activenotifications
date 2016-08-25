@@ -1,5 +1,3 @@
 notifications_puller:
-    path: /activenotifications/{last}
+    path: /activenotifications
     defaults: { _controller: anavaro.activenotifications.maincontroller:base }
-    requirements:
-        last: \d+

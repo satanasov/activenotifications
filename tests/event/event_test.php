@@ -121,8 +121,8 @@ class event_test extends \phpbb_database_test_case
 				false, // Is BOT
 				60, // $config['notification_pull_time']
 				1, // expected response
-				0, // ACTIVE_NOTIFICATION_LAST
-				60000, // ACTIVE_NOTIFICATION_TIME
+				0, // ACTIVE_NOTIFICATIONS_LAST
+				60000, // ACTIVE_NOTIFICATIONS_TIME
 			),
 			'change_time' => array(
 				2, //User ID
@@ -130,8 +130,8 @@ class event_test extends \phpbb_database_test_case
 				false, // Is BOT
 				10, // $config['notification_pull_time']
 				1, // expected response
-				0, // ACTIVE_NOTIFICATION_LAST
-				10000, // ACTIVE_NOTIFICATION_TIME
+				0, // ACTIVE_NOTIFICATIONS_LAST
+				10000, // ACTIVE_NOTIFICATIONS_TIME
 			),
 			'guest' => array(
 				1, //User ID
@@ -139,8 +139,8 @@ class event_test extends \phpbb_database_test_case
 				false, // Is BOT
 				60, // $config['notification_pull_time']
 				0, // expected response
-				0, // ACTIVE_NOTIFICATION_LAST
-				60000, // ACTIVE_NOTIFICATION_TIME
+				0, // ACTIVE_NOTIFICATIONS_LAST
+				60000, // ACTIVE_NOTIFICATIONS_TIME
 			),
 			'not_reged' => array(
 				2, //User ID
@@ -148,8 +148,8 @@ class event_test extends \phpbb_database_test_case
 				false, // Is BOT
 				60, // $config['notification_pull_time']
 				0, // expected response
-				0, // ACTIVE_NOTIFICATION_LAST
-				60000, // ACTIVE_NOTIFICATION_TIME
+				0, // ACTIVE_NOTIFICATIONS_LAST
+				60000, // ACTIVE_NOTIFICATIONS_TIME
 			),
 			'is_bot' => array(
 				2, //User ID
@@ -157,8 +157,8 @@ class event_test extends \phpbb_database_test_case
 				true, // Is BOT
 				60, // $config['notification_pull_time']
 				0, // expected response
-				0, // ACTIVE_NOTIFICATION_LAST
-				60000, // ACTIVE_NOTIFICATION_TIME
+				0, // ACTIVE_NOTIFICATIONS_LAST
+				60000, // ACTIVE_NOTIFICATIONS_TIME
 			),
 		);
 	}
@@ -183,9 +183,9 @@ class event_test extends \phpbb_database_test_case
 			$this->template->expects($this->exactly($expected))
 				->method('assign_vars')
 				->with(array(
-					'ACTIVE_NOTIFICATION_LAST' => $last_n,
-					'ACTIVE_NOTIFICATION_TIME' => $time_n,
-					'ACTIVE_NOTIFICATION_URL'	=> false, // This is false becouse we have mock route helper
+					'ACTIVE_NOTIFICATIONS_LAST' => $last_n,
+					'ACTIVE_NOTIFICATIONS_TIME' => $time_n,
+					'ACTIVE_NOTIFICATIONS_URL'	=> false, // This is false becouse we have mock route helper
 					'ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN'	=> 'localhost',
 					'ACTIVE_NOTIFICATIONS_COOKIE_NAME'	=> 'phpbb3_asd_obj_an',
 					'ACTIVE_NOTIFICATIONS_COOKIE_PATH'	=> '/'

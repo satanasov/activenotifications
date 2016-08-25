@@ -68,17 +68,16 @@ class main_controller
 	}
 
 	/**
-	 * @param int $last
 	 * @return JsonResponse
 	 */
-	public function base($last)
+	public function base()
 	{
 		if ($this->user->data['user_id'] == ANONYMOUS || !$this->user->data['is_registered'] || $this->user->data['is_bot'] || !$this->request->is_ajax())
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
-		$last = (int) $last;
+		$last = $this->request->variable('last', 0);
 
 		// Fix avatars & smilies
 		if (!defined('PHPBB_USE_BOARD_URL_PATH'))

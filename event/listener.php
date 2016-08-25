@@ -75,11 +75,12 @@ class listener implements EventSubscriberInterface
 		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] && !$this->user->data['is_bot'])
 		{
 			$last = $this->get_last_notification();
+
 			$this->template->assign_vars(array(
-				'ACTIVE_NOTIFICATION_LAST'				=> $last,
-				'ACTIVE_NOTIFICATION_TIME'				=> 1000 * $this->config['notification_pull_time'],
-				'ACTIVE_NOTIFICATION_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
-				'ACTIVE_NOTIFICATION_URL'				=> substr($this->helper->route('notifications_puller', array('last' => $last)), 0, -strlen($last)),
+				'ACTIVE_NOTIFICATIONS_LAST'				=> $last,
+				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $this->config['notification_pull_time'],
+				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
+				'ACTIVE_NOTIFICATIONS_URL'				=> $this->helper->route('notifications_puller'),
 				'ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN'	=> $this->config['cookie_domain'],
 				'ACTIVE_NOTIFICATIONS_COOKIE_NAME'		=> $this->config['cookie_name'] . '_an',
 				'ACTIVE_NOTIFICATIONS_COOKIE_PATH'		=> $this->config['cookie_path'],

@@ -1,4 +1,4 @@
-<!-- IF ACTIVE_NOTIFICATION_LAST -->
+<!-- IF ACTIVE_NOTIFICATIONS_LAST -->
 <script>
 /*!
  * jQuery Cookie Plugin v1.4.1
@@ -120,27 +120,27 @@
 <script>
 (function($) {  // Avoid conflicts with other libraries
 	"use strict";
+
 	// Define cookie default
 	$.cookie.json = true;
 	$.cookie.defaults.path = '{ACTIVE_NOTIFICATIONS_COOKIE_PATH}';
 	$.cookie.defaults.domain = '{ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN}';
-	var last_notification = {ACTIVE_NOTIFICATION_LAST};
-	var last_unread = $('strong', '#notification_list_button').html();
-	var sessionLength = {ACTIVE_NOTIFICATION_SESSION_LENGTH};
-	var autoReloadTimer = null;
-	function active_notifications(){
-		// we need time
-		var t = new Date();
-		var now = t.getTime();
 
+	//var lastNotification = {ACTIVE_NOTIFICATIONS_LAST};
+	var lastNotification = 5;
+	var lastUnread = parseInt($('strong', '#notification_list_button').html());
+	var sessionLength = {ACTIVE_NOTIFICATIONS_SESSION_LENGTH};
+	var autoReloadTimer = null;
+
+	function activeNotifications() {
+		var now = new Date().getTime();
 		var cookie = $.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}');
-		var last_time = $.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time');
-		if (!cookie || (last_time + {ACTIVE_NOTIFICATION_TIME} < now) || !last_time)
-		{
+		var lastTime = $.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time');
+		if (!cookie || (!lastTime || lastTime + {ACTIVE_NOTIFICATIONS_TIME} < now)) {
 			// Remove last update time
 			$.removeCookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time');
 			// Set Lock so other instance may know for the request and not do it again
-			$.getJSON("{ACTIVE_NOTIFICATION_URL}" + last_notification).done(function(response) {
+			$.getJSON('{ACTIVE_NOTIFICATIONS_URL}', {last: lastNotification}).done(function(response) {
 				parse(response);
 				// Update cookie with the info
 				$.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}', response, { expires: 1 });
@@ -148,20 +148,18 @@
 				clearTimeout(autoReloadTimer);
 			});
 			$.cookie('{ACTIVE_NOTIFICATIONS_COOKIE_NAME}_time', now, { expires: 1 });
-		}
-		else
-		{
+		} else {
 			parse(cookie);
 		}
 	}
-	function parse(response)
-	{
-		last_notification = response.last;
+
+	function parse(response) {
+		lastNotification = response.last;
 
 		// Change value of notification counter and set window title
-		if (last_unread != response.unread) {
-			last_unread = response.unread;
-			phpbb.markNotifications($(), last_unread);
+		if (lastUnread != response.unread) {
+			lastUnread = response.unread;
+			phpbb.markNotifications($(), lastUnread);
 		}
 
 		// Add notifications
@@ -170,15 +168,17 @@
 			phpbb.lazyLoadAvatars();
 		}
 	}
+
 	function autoReload() {
 		autoReloadTimer = setTimeout(function() {
-			active_notifications();
-			sessionLength -= {ACTIVE_NOTIFICATION_TIME};
+			activeNotifications();
+			sessionLength -= {ACTIVE_NOTIFICATIONS_TIME};
 			if (sessionLength > 0) {
 				autoReload();
 			}
-		}, {ACTIVE_NOTIFICATION_TIME});
+		}, {ACTIVE_NOTIFICATIONS_TIME});
 	}
+
 	$(document).ready(autoReload);
 })(jQuery); // Avoid conflicts with other libraries
 </script>
