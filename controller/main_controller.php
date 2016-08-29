@@ -22,7 +22,7 @@ class main_controller
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var \phpbb\request\request */
+	/** @var \phpbb\request\request_interface */
 	protected $request;
 
 	/** @var \phpbb\notification\manager */
@@ -42,7 +42,7 @@ class main_controller
 	 *
 	 * @param \phpbb\config\config				$config
 	 * @param \phpbb\user						$user
-	 * @param \phpbb\request\request			$request
+	 * @param \phpbb\request\request_interface	$request
 	 * @param \phpbb\notification\manager		$notification_manager
 	 * @param \phpbb\db\driver\driver_interface	$db
 	 * @param \phpbb\template\template			$template
@@ -51,7 +51,7 @@ class main_controller
 	public function __construct(
 		\phpbb\config\config $config,
 		\phpbb\user $user,
-		\phpbb\request\request $request,
+		\phpbb\request\request_interface $request,
 		\phpbb\notification\manager $notification_manager,
 		\phpbb\db\driver\driver_interface $db,
 		\phpbb\template\template $template,
@@ -173,17 +173,22 @@ class main_controller
 	 */
 	protected function relative_to_absolute_url($url)
 	{
+		if (!$url)
+		{
+			return '';
+		}
+
 		// Remove leading ../
 		$url = $this->path_helper->remove_web_root_path($url);
 
 		// Remove leading . if present
-		if ($url !== '' && $url[0] === '.')
+		if (strlen($url) && $url[0] === '.')
 		{
 			$url = substr($url, 1);
 		}
 
-		// Prepend / if not presend
-		if ($url !== '' && $url[0] !== '/')
+		// Prepend / if not present
+		if (strlen($url) && $url[0] !== '/')
 		{
 			$url = '/' . $url;
 		}
