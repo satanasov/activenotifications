@@ -99,7 +99,7 @@ class listener implements EventSubscriberInterface
 			$display_vars = $event['display_vars'];
 			$my_config_vars = array(
 				'legend10'					=> 'ACTIVE_NOTIFICATIONS',
-				'notification_pull_time'	=> array('lang' => 'ACTIVE_NOTIFICATIONS_TIME', 'validate' => 'int:0:99', 'type' => 'number', 'explain' => true),
+				'notification_pull_time'	=> array('lang' => 'ACTIVE_NOTIFICATIONS_TIME', 'validate' => 'int:5:9999', 'type' => 'number', 'explain' => true),
 			);
 
 			// Insert my config vars after...
@@ -122,7 +122,9 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_last_notification()
 	{
-		$last_notification = $this->notification_manager->load_notifications(array('limit' => 1));
+		$last_notification = $this->notification_manager->load_notifications(array(
+			'limit' => 1,
+		));
 
 		foreach ($last_notification['notifications'] as $notification)
 		{
