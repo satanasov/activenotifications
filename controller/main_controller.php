@@ -16,9 +16,6 @@ use phpbb\exception\http_exception;
 
 class main_controller
 {
-	/** @var \phpbb\config\config */
-	protected $config;
-
 	/** @var \phpbb\user */
 	protected $user;
 
@@ -40,7 +37,6 @@ class main_controller
 	/**
 	 * Constructor
 	 *
-	 * @param \phpbb\config\config				$config
 	 * @param \phpbb\user						$user
 	 * @param \phpbb\request\request_interface	$request
 	 * @param \phpbb\notification\manager		$notification_manager
@@ -49,7 +45,6 @@ class main_controller
 	 * @param \phpbb\path_helper				$path_helper
 	 */
 	public function __construct(
-		\phpbb\config\config $config,
 		\phpbb\user $user,
 		\phpbb\request\request_interface $request,
 		\phpbb\notification\manager $notification_manager,
@@ -58,7 +53,6 @@ class main_controller
 		\phpbb\path_helper $path_helper
 	)
 	{
-		$this->config							= $config;
 		$this->user								= $user;
 		$this->request							= $request;
 		$this->notification_manager				= $notification_manager;

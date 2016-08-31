@@ -2,7 +2,6 @@ services:
     anavaro.activenotifications.maincontroller:
         class: anavaro\activenotifications\controller\main_controller
         arguments:
-            - '@config'
             - '@user'
             - '@request'
             - '@notification_manager'
