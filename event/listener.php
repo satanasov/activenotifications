@@ -68,7 +68,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * object $event The event object
+	 * @param object $event The event object
 	 */
 	public function setup($event)
 	{
@@ -81,9 +81,7 @@ class listener implements EventSubscriberInterface
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $this->config['notification_pull_time'],
 				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
 				'ACTIVE_NOTIFICATIONS_URL'				=> $this->helper->route('notifications_puller'),
-				'ACTIVE_NOTIFICATIONS_COOKIE_DOMAIN'	=> $this->config['cookie_domain'],
-				'ACTIVE_NOTIFICATIONS_COOKIE_NAME'		=> $this->config['cookie_name'] . '_an',
-				'ACTIVE_NOTIFICATIONS_COOKIE_PATH'		=> $this->config['cookie_path'],
+				'A_COOKIE_PREFIX'						=> addslashes($this->config['cookie_name'] . '_'),
 			));
 		}
 	}
