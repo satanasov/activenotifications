@@ -25,7 +25,7 @@
 			<value>1</value>
 			<value>0</value>
 			<value>2</value>
-			<value>0</value>
+			<value>1</value>
 			<value>1430575521</value>
 			<value>a:2:{s:12:"from_user_id";s:2:"2";s:15:"message_subject";s:4:"test";}</value>
 		</row>
@@ -36,7 +36,7 @@
 			<value>0</value>
 			<value>2</value>
 			<value>0</value>
-			<value>1430575521</value>
+			<value>1430575522</value>
 			<value>a:2:{s:12:"from_user_id";s:2:"2";s:15:"message_subject";s:4:"test";}</value>
 		</row>
 		<row>
@@ -45,8 +45,8 @@
 			<value>1</value>
 			<value>0</value>
 			<value>2</value>
-			<value>1</value>
-			<value>1430575521</value>
+			<value>0</value>
+			<value>1430575523</value>
 			<value>a:2:{s:12:"from_user_id";s:2:"2";s:15:"message_subject";s:4:"test";}</value>
 		</row>
 	</table>
