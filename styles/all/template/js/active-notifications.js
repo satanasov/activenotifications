@@ -18,7 +18,7 @@ jQuery(function($) {
 				.done(accept)
 				.fail(function(jqXHR, textStatus, errorThrown) {
 					if (typeof console !== 'undefined' && console.log) {
-						console.log('AJAX error. status: ' + textStatus + ', message: ' + errorThrown + ' (' + xhr.responseText + ')');
+						console.log('AJAX error. status: ' + textStatus + ', message: ' + errorThrown + ' (' + jqXHR.responseText + ')');
 					}
 				});
 		},
