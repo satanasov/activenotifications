@@ -1,5 +1,11 @@
 # Active Notifications
+[![Build Status](https://travis-ci.org/satanasov/activenotifications.svg?branch=master)](https://travis-ci.org/satanasov/activenotifications) [![Coverage Status](https://coveralls.io/repos/github/satanasov/activenotifications/badge.svg?branch=master)](https://coveralls.io/github/satanasov/activenotifications?branch=master)
+
 This extension will keep your notifications "active" - it will pull special controller every configurable amount of seconds and will recieve JSON of the notifications for the user. Then it will update the notifications container adding new ones at the top.
+
+Original author: [Stanislav Atanasov](https://github.com/satanasov)
+
+Main contributor: [kasimi](https://github.com/kasimi)
 
 ## Installation
 1. git clone https://github.com/satanasov/activenotifications.git $phpbb_root_path/ext/anavaro/activenotifications

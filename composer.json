@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "This extension add active notifications to phpBB 3.1 board",
 	"homepage": "http://lab.anavaro.com/forum/viewforum.php?f=8",
-	"version": "0.7",
+	"version": "0.9",
 	"time": "2015-04-29",
 	"license": "GPL-2.0",
 	"authors": [
