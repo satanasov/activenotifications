@@ -2,19 +2,19 @@ services:
     anavaro.activenotifications.maincontroller:
         class: anavaro\activenotifications\controller\main_controller
         arguments:
-            - @config
-            - @user
-            - @request
-            - @notification_manager
-            - @dbal.conn
+            - '@user'
+            - '@request'
+            - '@notification_manager'
+            - '@dbal.conn'
+            - '@template'
+            - '@path_helper'
     anavaro.activenotifications.listener:
         class: anavaro\activenotifications\event\listener
         arguments:
-            - @config
-            - @user
-            - @template
-            - @notification_manager
-            - @controller.helper
-            - @request
+            - '@config'
+            - '@user'
+            - '@template'
+            - '@notification_manager'
+            - '@controller.helper'
         tags:
             - { name: event.listener }

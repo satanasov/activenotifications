@@ -1,100 +1,195 @@
 <?php
+
 /**
-*
-* Active Notifications for the phpBB Forum Software package.
-*
-* @copyright (c) 2015 Lucifer <http://www.anavaro.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * @package phpBB Extension - Active Notifications
+ * @copyright (c) 2015 Lucifer <https://www.anavaro.com>
+ * @copyright (c) 2016 kasimi
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace anavaro\activenotifications\controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use phpbb\exception\http_exception;
+
 class main_controller
 {
-	public function __construct(\phpbb\config\config $config, \phpbb\user $user, \phpbb\request\request $request, \phpbb\notification\manager $notification_manager,
-	\phpbb\db\driver\driver_interface $db)
+	/** @var \phpbb\user */
+	protected $user;
+
+	/** @var \phpbb\request\request_interface */
+	protected $request;
+
+	/** @var \phpbb\notification\manager */
+	protected $notification_manager;
+
+	/** @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var \phpbb\template\template */
+	protected $template;
+
+	/** @var \phpbb\path_helper */
+	protected $path_helper;
+
+	/**
+	 * Constructor
+	 *
+	 * @param \phpbb\user						$user
+	 * @param \phpbb\request\request_interface	$request
+	 * @param \phpbb\notification\manager		$notification_manager
+	 * @param \phpbb\db\driver\driver_interface	$db
+	 * @param \phpbb\template\template			$template
+	 * @param \phpbb\path_helper				$path_helper
+	 */
+	public function __construct(
+		\phpbb\user $user,
+		\phpbb\request\request_interface $request,
+		\phpbb\notification\manager $notification_manager,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\template\template $template,
+		\phpbb\path_helper $path_helper
+	)
 	{
-		$this->config = $config;
-		$this->user = $user;
-		$this->request = $request;
-		$this->notification_manager = $notification_manager;
-		$this->db = $db;
+		$this->user								= $user;
+		$this->request							= $request;
+		$this->notification_manager				= $notification_manager;
+		$this->db								= $db;
+		$this->template							= $template;
+		$this->path_helper						= $path_helper;
 	}
 
-	public function base($last)
+	/**
+	 * @return JsonResponse
+	 */
+	public function base()
 	{
-		//$this->user->session_begin(false);
-		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] == true && $this->user->data['is_bot'] == false)
+		if ($this->user->data['user_id'] == ANONYMOUS || !$this->user->data['is_registered'] || $this->user->data['is_bot'] || !$this->request->is_ajax())
 		{
-			$this->user->session_begin(false);
-			$response = $this->get_unread($last);
-			// Send a JSON response if an AJAX request was used
-		}
-		else
-		{
-			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
+			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
-		if ($this->request->is_ajax())
+		$last = $this->request->variable('last', 0);
+
+		// Fix avatars & smilies
+		if (!defined('PHPBB_USE_BOARD_URL_PATH'))
 		{
-			$this->user->session_begin(false);
-			return new \Symfony\Component\HttpFoundation\JsonResponse(array(
-				$response
+			define('PHPBB_USE_BOARD_URL_PATH', true);
+		}
+
+		$notifications_content = '';
+		$notifications = $this->get_unread($last);
+
+		if (!empty($notifications['notifications']))
+		{
+			$this->template->assign_vars(array(
+				'T_THEME_PATH' => generate_board_url() . '/styles/' . rawurlencode($this->user->style['style_path']) . '/theme',
 			));
+
+			foreach ($notifications['notifications'] as $notification)
+			{
+				$last = max($last, $notification->notification_id);
+
+				$notification_for_display = $notification->prepare_for_display();
+				$notification_for_display['URL'] = $this->relative_to_absolute_url($notification_for_display['URL']);
+				$notification_for_display['U_MARK_READ'] = $this->relative_to_absolute_url($notification_for_display['U_MARK_READ']);
+
+				$this->template->assign_block_vars('notifications', $notification_for_display);
+			}
+
+			$notifications_content = $this->render_template('notification_dropdown.html');
 		}
-		else
-		{
-			//var_dump($response);
-			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
-		}
+
+		return new JsonResponse(array(
+			'last'			=> $last,
+			'unread'		=> $notifications['unread_count'],
+			'notifications'	=> $notifications_content,
+		));
 	}
+
+	/**
+	 * @param int $last
+	 * @return array
+	 */
 	protected function get_unread($last)
 	{
-		$this->user->session_begin(false);
 		$notifications_new = array();
-		$sql = 'SELECT notification_id FROM ' . NOTIFICATIONS_TABLE . '
-		WHERE notification_id > ' . $last . ' AND user_id = ' . $this->user->data['user_id'];
+
+		$sql = 'SELECT notification_id
+			FROM ' . NOTIFICATIONS_TABLE . '
+			WHERE notification_id > ' . (int) $last . '
+				AND user_id = ' . (int) $this->user->data['user_id'];
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$notifications_new[] = (int) $row['notification_id'];
 		}
 		$this->db->sql_freeresult($result);
-		$notifications = $this->notification_manager->load_notifications(array(
-			'notification_id'	=> $notifications_new,
-			'count_unread'	=> true,
-		));
-		$output = array();
-		$output['unread'] = $notifications['unread_count'];
-		if (!empty($notifications_new))
+
+		// Add non-existent notification so that no new notifications are returned
+		if (!$notifications_new)
 		{
-			foreach ($notifications['notifications'] as $notification)
-			{
-				$tmp = $notification->prepare_for_display();
-				if ($tmp['U_MARK_READ'] != '')
-				{
-					$mark = explode('?', $tmp['U_MARK_READ']);
-					$tmp['U_MARK_READ'] = $this->config['server_protocol'] . $this->config['server_name'] . $this->config['script_path'] . '/index.php?' . $mark[1];
-				}
-				if ($tmp['URL'] != '')
-				{
-					$url = explode('/', $tmp['URL']);
-					if ($url[0] == '.')
-					{
-						foreach ($url as $id => $el)
-						{
-							if ($el == '.' || $el == '..')
-							{
-								unset($url[$id]);
-							}
-						}
-						$tmp['URL'] = $this->config['server_protocol'] . $this->config['server_name'] . $this->config['script_path'] . '/' . implode('/', $url);
-					}
-				}
-				$output['notifs'][] = $tmp;
-			}
+			$notifications_new[] = 0;
 		}
-		return $output;
+
+		return $this->notification_manager->load_notifications(array(
+			'notification_id'	=> $notifications_new,
+			'count_unread'		=> true,
+		));
+	}
+
+	/**
+	 * Renders a template file and returns it
+	 *
+	 * @param string $template_file
+	 * @return string
+	 */
+	protected function render_template($template_file)
+	{
+		$this->template->set_filenames(array('body' => $template_file));
+		$content = $this->template->assign_display('body', '', true);
+
+		return trim(str_replace(array("\r", "\n"), '', $content));
+	}
+
+	/**
+	 * Removes all ../ from the beginning of the $url and prepends the board url.
+	 *
+	 * Example
+	 *  in: "./../index.php"
+	 *  out: "http://example-board.net/index.php"
+	 *
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	protected function relative_to_absolute_url($url)
+	{
+		if (!$url)
+		{
+			return '';
+		}
+
+		// Remove leading ../
+		$url = $this->path_helper->remove_web_root_path($url);
+
+		// Remove leading . if present
+		if (strlen($url) && $url[0] === '.')
+		{
+			$url = substr($url, 1);
+		}
+
+		// Prepend / if not present
+		if (strlen($url) && $url[0] !== '/')
+		{
+			$url = '/' . $url;
+		}
+
+		// Prepend board url
+		$url = generate_board_url() . $url;
+
+		return $url;
 	}
 }
