@@ -81,6 +81,7 @@ class event_success_test extends \anavaro\activenotifications\tests\event\event_
 		$this->template->expects($this->exactly(1))
 			->method('assign_vars')
 			->with(array(
+				'ACTIVE_NOTIFICATIONS_ENABLED'			=> true,
 				'ACTIVE_NOTIFICATIONS_LAST'				=> $expected_last_id,
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $cfg_notification_pull_time,
 				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $cfg_session_length,
