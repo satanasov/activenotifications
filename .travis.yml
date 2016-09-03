@@ -4,26 +4,26 @@ language: php
 
 matrix:
   include:
-#    - php: 5.3.3
-#      env: DB=mysqli
-#    - php: 5.3
-#      env: DB=mysqli # MyISAM
-#    - php: 5.4
-#      env: DB=mysqli
-#    - php: 5.4
-#      env: DB=mysql
-#    - php: 5.4
-#      env: DB=mariadb
-#    - php: 5.4
-#      env: DB=postgres
-#    - php: 5.4
-#      env: DB=sqlite3
-#    - php: 5.5
-#      env: DB=mysqli
+    - php: 5.3.3
+      env: DB=mysqli
+    - php: 5.3
+      env: DB=mysqli # MyISAM
+    - php: 5.4
+      env: DB=mysqli
+    - php: 5.4
+      env: DB=mysql
+    - php: 5.4
+      env: DB=mariadb
+    - php: 5.4
+      env: DB=postgres
+    - php: 5.4
+      env: DB=sqlite3
+    - php: 5.5
+      env: DB=mysqli
     - php: 5.6
       env: DB=mysqli
-#    - php: hhvm
-#      env: DB=mysqli
+    - php: hhvm
+      env: DB=mysqli
   allow_failures:
     - php: hhvm
   fast_finish: true
@@ -47,7 +47,7 @@ install:
   - travis/prepare-extension.sh $EXTNAME $PHPBB_BRANCH
   - travis/setup-phpbb.sh $DB $TRAVIS_PHP_VERSION
   - sh -c "if [ '$EPV' != '0' ] && [ '$TRAVIS_PHP_VERSION' = '5.5' ] && [ '$DB' = 'mysqli' ]; then cd phpBB; composer require phpbb/epv:dev-master --dev --no-interaction; cd ../; fi"
-  - sh -c "if [ '$COVERAGE' != '0' ] && [ '$TRAVIS_PHP_VERSION' = '5.6' ] && [ '$DB' = 'mysqli' ]; then cd phpBB; composer require satooshi/php-coveralls --dev --no-interaction; cd ../; fi"
+  - sh -c "if [ '$COVERAGE' != '0' ] && [ '$TRAVIS_PHP_VERSION' = '5.6' ] && [ '$DB' = 'mysqli' ]; then cd phpBB/ext/$EXTNAME; composer require satooshi/php-coveralls --dev --no-interaction; cd ../../../../; fi"
 
 before_script:
   - travis/setup-database.sh $DB $TRAVIS_PHP_VERSION
@@ -61,6 +61,5 @@ script:
   - sh -c "if [ '$EPV' != '0' ] && [ '$TRAVIS_PHP_VERSION' = '5.5' ] && [ '$DB' = 'mysqli' ]; then phpBB/vendor/bin/EPV.php run --dir='phpBB/ext/$EXTNAME/'; fi"
   
 after_script:
-  - sh -c "ls -la phpBB/ext/$EXTNAME/vendor/bin/"
   - sh -c "if [ '$COVERAGE' != '0' ] && [ '$TRAVIS_PHP_VERSION' = '5.6' ] && [ '$DB' = 'mysqli' ]; then php phpBB/ext/$EXTNAME/vendor/bin/coveralls -v -x build/logs/clover.xml -r phpBB/ext/$EXTNAME/; fi"
 
