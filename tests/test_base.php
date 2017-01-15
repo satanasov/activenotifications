@@ -86,7 +86,9 @@ abstract class test_base extends \phpbb_database_test_case
 
 		$this->config = new \phpbb\config\config(array());
 
-		$this->user = $user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
+		$this->user = $this->getMock('\phpbb\user', array(), array(
+			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
+			'\phpbb\datetime'));
 
 		$this->template = $template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
