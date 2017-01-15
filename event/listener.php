@@ -121,7 +121,7 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_last_notification()
 	{
-		$last_notification = $this->notification_manager->load_notifications(array(
+		$last_notification = $this->notification_manager->load_notifications('notification.method.board', array(
 			'limit' => 1,
 		));
 

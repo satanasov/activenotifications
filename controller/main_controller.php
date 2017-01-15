@@ -66,7 +66,7 @@ class main_controller
 	 */
 	public function base()
 	{
-		if ($this->user->data['user_id'] == ANONYMOUS || !$this->user->data['is_registered'] || $this->user->data['is_bot'] || !$this->request->is_ajax())
+		if ($this->user->data['user_id'] == ANONYMOUS || !$this->user->data['is_registered'] || $this->user->data['is_bot'] /*|| !$this->request->is_ajax()*/)
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
@@ -134,7 +134,7 @@ class main_controller
 			$notifications_new[] = 0;
 		}
 
-		return $this->notification_manager->load_notifications(array(
+		return $this->notification_manager->load_notifications('notification.method.board', array(
 			'notification_id'	=> $notifications_new,
 			'count_unread'		=> true,
 		));
