@@ -194,7 +194,45 @@ abstract class test_base extends \phpbb_database_test_case
 		$phpbb_container->compile();
 
 		$this->notifications->setDependencies($this->auth, $this->config);
+
+		$types = array();
+		foreach ($this->get_notification_types() as $type)
+		{
+			$class = $this->build_type($type);
+			$types[$type] = $class;
+		}
+		$this->notifications->set_var('notification_types', $types);
+		$methods = array();
+		foreach ($this->get_notification_methods() as $method)
+		{
+			$class = $this->container->get($method);
+			$methods[$method] = $class;
+		}
+		$this->notifications->set_var('notification_methods', $methods);
+		//$this->db->sql_query('DELETE FROM phpbb_notification_types');
+		//$this->db->sql_query('DELETE FROM phpbb_notifications');
+		//$this->db->sql_query('DELETE FROM phpbb_user_notifications');
 	}
+
+	protected function build_type($type)
+	{
+		$instance = $this->container->get($type);
+		return $instance;
+	}
+
+	protected function get_notification_types()
+	{
+		return array(
+			'notification.type.pm'
+		);
+	}
+	protected function get_notification_methods()
+	{
+		return array(
+			'notification.method.board',
+		);
+	}
+
 
 	/**
 	 * @param array $user_data
