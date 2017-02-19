@@ -1,7 +1,7 @@
 {
 	"name": "anavaro/activenotifications",
 	"type": "phpbb-extension",
-	"description": "This extension add active notifications to phpBB 3.1 board",
+	"description": "This extension adds active notifications to your phpBB 3.2 board",
 	"homepage": "http://lab.anavaro.com/forum/viewforum.php?f=8",
 	"version": "0.9",
 	"time": "2017-01-14",
@@ -14,9 +14,9 @@
 			"role": "Lead Developer"
 		},
 		{
-			"name": "Kasimi",
+			"name": "kasimi",
 			"email": "mail@kasimi.net",
-			"homepage": "https://kasimi.net/",
+			"homepage": "https://kasimi.net",
 			"role": "Developer"
 		}
 	],
