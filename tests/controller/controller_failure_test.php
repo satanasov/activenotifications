@@ -75,6 +75,10 @@ class controller_failure_test extends controller_base
 			'is_bot'		=> $is_bot,
 		));
 
+		$this->set_config_data(array(
+			'allow_board_notifications' => true,
+		));
+
 		$this->request->expects($this->any())
 			->method('is_ajax')
 			->will($this->returnValue($is_ajax));

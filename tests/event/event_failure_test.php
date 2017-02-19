@@ -54,6 +54,10 @@ class event_failure_test extends \anavaro\activenotifications\tests\event\event_
 			'is_bot'			=> $is_bot,
 		));
 
+		$this->set_config_data(array(
+			'allow_board_notifications' => true,
+		));
+
 		$this->template->expects($this->exactly(0))
 			->method('assign_vars');
 
