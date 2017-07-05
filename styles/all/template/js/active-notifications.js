@@ -29,6 +29,9 @@ jQuery(function($) {
 			if (lastUnreadCount != data['unread']) {
 				lastUnreadCount = parseInt(data['unread']);
 				phpbb.markNotifications($(), lastUnreadCount);
+				if (lastUnreadCount) {
+					$('#notification_list_button > strong').removeClass('hidden');
+				}
 			}
 
 			// Add notifications
