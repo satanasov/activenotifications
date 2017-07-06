@@ -40,6 +40,7 @@ branches:
   only:
     - master
     - /^\d+(\.\d+)?\.x$/
+    - /^stable-\d+(\.\d+){1,2}-3\.1$/
 
 install:
   - travis/prepare-phpbb.sh $EXTNAME $PHPBB_BRANCH
