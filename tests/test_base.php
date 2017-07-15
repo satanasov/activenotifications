@@ -3,7 +3,8 @@
 /**
  *
  * @package phpBB Extension - Active Notifications
- * @copyright (c) 2016 kasimi
+ * @copyright (c) 2016 Lucifer <https://www.anavaro.com>
+ * @copyright (c) 2016 kasimi <https://kasimi.net>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -12,8 +13,6 @@ namespace anavaro\activenotifications\tests;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
-
 
 require_once __DIR__ . '/../../../../../tests/notification/manager_helper.php';
 
@@ -94,9 +93,11 @@ abstract class test_base extends \phpbb_database_test_case
 
 		$this->config = new \phpbb\config\config(array());
 
-		$this->user = $this->getMock('\phpbb\user', array(), array(
-			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
-			'\phpbb\datetime'));
+		$this->language = $this->getMockBuilder('\phpbb\language\language')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->user = $this->getMock('\phpbb\user', array(), array($this->language, '\phpbb\datetime'));
 
 		$this->template = $template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
@@ -113,11 +114,8 @@ abstract class test_base extends \phpbb_database_test_case
 			$this->root_path,
 			$this->php_ext
 		);
-		$this->language = $this->getMockBuilder('\phpbb\language\language')
-			->disableOriginalConstructor()
-			->getMock();
 
-		$this->container = new \phpbb_mock_container_builder();
+		$this->container = $phpbb_container = new ContainerBuilder();
 
 		$this->dispatcher = $phpbb_dispatcher = new \phpbb\event\dispatcher($this->container);
 
@@ -137,28 +135,7 @@ abstract class test_base extends \phpbb_database_test_case
 			$phpEx
 		);
 
-		/*$this->notifications = new \phpbb_notification_manager_helper(
-			array(),
-			array(),
-			$this->container,
-			$this->user_loader,
-			$this->dispatcher,
-			$this->db,
-			$this->cache,
-			$this->language,
-			$this->user,
-			$this->config,
-			$this->root_path,
-			$this->php_ext,
-			NOTIFICATION_TYPES_TABLE,
-			NOTIFICATIONS_TABLE,
-			USER_NOTIFICATIONS_TABLE
-		);
-
-		$this->notifications->setDependencies($this->auth, $this->config);*/
-
-		$phpbb_container = $this->container = new ContainerBuilder();
-		$loader     = new YamlFileLoader($phpbb_container, new FileLocator(__DIR__ . '/../../../../../tests/notification/fixtures'));
+		$loader = new YamlFileLoader($phpbb_container, new FileLocator(__DIR__ . '/../../../../../tests/notification/fixtures'));
 		$loader->load('services_notification.yml');
 		$phpbb_container->set('user_loader', $this->user_loader);
 		$phpbb_container->set('user', $this->user);
@@ -209,30 +186,36 @@ abstract class test_base extends \phpbb_database_test_case
 			$methods[$method] = $class;
 		}
 		$this->notifications->set_var('notification_methods', $methods);
-		//$this->db->sql_query('DELETE FROM phpbb_notification_types');
-		//$this->db->sql_query('DELETE FROM phpbb_notifications');
-		//$this->db->sql_query('DELETE FROM phpbb_user_notifications');
 	}
 
+	/**
+	 * @param $type
+	 * @return object
+	 */
 	protected function build_type($type)
 	{
-		$instance = $this->container->get($type);
-		return $instance;
+		return $this->container->get($type);
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function get_notification_types()
 	{
 		return array(
 			'notification.type.pm'
 		);
 	}
+
+	/**
+	 * @return array
+	 */
 	protected function get_notification_methods()
 	{
 		return array(
 			'notification.method.board',
 		);
 	}
-
 
 	/**
 	 * @param array $user_data

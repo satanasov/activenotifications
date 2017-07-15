@@ -3,7 +3,8 @@
 /**
  *
  * @package phpBB Extension - Active Notifications
- * @copyright (c) 2016 kasimi
+ * @copyright (c) 2016 Lucifer <https://www.anavaro.com>
+ * @copyright (c) 2016 kasimi <https://kasimi.net>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -73,6 +74,10 @@ class controller_failure_test extends controller_base
 			'user_id'		=> $user_id,
 			'is_registered'	=> $is_registered,
 			'is_bot'		=> $is_bot,
+		));
+
+		$this->set_config_data(array(
+			'allow_board_notifications' => true,
 		));
 
 		$this->request->expects($this->any())

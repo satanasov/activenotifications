@@ -4,6 +4,7 @@
  *
  * @package phpBB Extension - Active Notifications
  * @copyright (c) 2014 Lucifer <https://www.anavaro.com>
+ * @copyright (c) 2016 kasimi <https://kasimi.net>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */

@@ -3,7 +3,8 @@
 /**
  *
  * @package phpBB Extension - Active Notifications
- * @copyright (c) 2016 kasimi
+ * @copyright (c) 2016 Lucifer <https://www.anavaro.com>
+ * @copyright (c) 2016 kasimi <https://kasimi.net>
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -73,6 +74,7 @@ class event_success_test extends \anavaro\activenotifications\tests\event\event_
 		));
 
 		$this->set_config_data(array(
+			'allow_board_notifications' => true,
 			'notification_pull_time'	=> $cfg_notification_pull_time,
 			'session_length'			=> $cfg_session_length,
 			'cookie_name'				=> 'phpbb_active_notifications_test'
