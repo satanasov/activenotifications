@@ -11,54 +11,67 @@
 
 namespace anavaro\activenotifications\controller;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
+use phpbb\db\driver\driver_interface as db_interface;
 use phpbb\exception\http_exception;
+use phpbb\notification\manager;
+use phpbb\notification\type\type_interface;
+use phpbb\path_helper;
+use phpbb\request\request_interface;
+use phpbb\template\template;
+use phpbb\user;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class main_controller
 {
-	/** @var \phpbb\user */
+	/** @var user */
 	protected $user;
 
-	/** @var \phpbb\request\request_interface */
+	/** @var request_interface */
 	protected $request;
 
-	/** @var \phpbb\notification\manager */
+	/** @var manager */
 	protected $notification_manager;
 
-	/** @var \phpbb\db\driver\driver_interface */
+	/** @var string */
+	protected $notifications_table;
+
+	/** @var db_interface */
 	protected $db;
 
-	/** @var \phpbb\template\template */
+	/** @var template */
 	protected $template;
 
-	/** @var \phpbb\path_helper */
+	/** @var path_helper */
 	protected $path_helper;
 
 	/**
 	 * Constructor
 	 *
-	 * @param \phpbb\user						$user
-	 * @param \phpbb\request\request_interface	$request
-	 * @param \phpbb\notification\manager		$notification_manager
-	 * @param \phpbb\db\driver\driver_interface	$db
-	 * @param \phpbb\template\template			$template
-	 * @param \phpbb\path_helper				$path_helper
+	 * @param user				$user
+	 * @param request_interface	$request
+	 * @param manager			$notification_manager
+	 * @param string			$notifications_table
+	 * @param db_interface		$db
+	 * @param template			$template
+	 * @param path_helper		$path_helper
 	 */
 	public function __construct(
-		\phpbb\user $user,
-		\phpbb\request\request_interface $request,
-		\phpbb\notification\manager $notification_manager,
-		\phpbb\db\driver\driver_interface $db,
-		\phpbb\template\template $template,
-		\phpbb\path_helper $path_helper
+		user $user,
+		request_interface $request,
+		manager $notification_manager,
+		$notifications_table,
+		db_interface $db,
+		template $template,
+		path_helper $path_helper
 	)
 	{
-		$this->user								= $user;
-		$this->request							= $request;
-		$this->notification_manager				= $notification_manager;
-		$this->db								= $db;
-		$this->template							= $template;
-		$this->path_helper						= $path_helper;
+		$this->user					= $user;
+		$this->request				= $request;
+		$this->notification_manager	= $notification_manager;
+		$this->notifications_table	= $notifications_table;
+		$this->db					= $db;
+		$this->template				= $template;
+		$this->path_helper			= $path_helper;
 	}
 
 	/**
@@ -84,14 +97,13 @@ class main_controller
 
 		if (!empty($notifications['notifications']))
 		{
-			$this->template->assign_vars(array(
-				'T_THEME_PATH' => generate_board_url() . '/styles/' . rawurlencode($this->user->style['style_path']) . '/theme',
-			));
+			$this->template->assign_var('T_THEME_PATH', generate_board_url() . '/styles/' . rawurlencode($this->user->style['style_path']) . '/theme');
 
 			foreach ($notifications['notifications'] as $notification)
 			{
 				$last = max($last, $notification->notification_id);
 
+				/** @var type_interface $notification */
 				$notification_for_display = $notification->prepare_for_display();
 				$notification_for_display['URL'] = $this->relative_to_absolute_url($notification_for_display['URL']);
 				$notification_for_display['U_MARK_READ'] = $this->relative_to_absolute_url($notification_for_display['U_MARK_READ']);
@@ -118,7 +130,7 @@ class main_controller
 		$notifications_new = array();
 
 		$sql = 'SELECT notification_id
-			FROM ' . NOTIFICATIONS_TABLE . '
+			FROM ' . $this->notifications_table . '
 			WHERE notification_id > ' . (int) $last . '
 				AND user_id = ' . (int) $this->user->data['user_id'];
 		$result = $this->db->sql_query($sql);

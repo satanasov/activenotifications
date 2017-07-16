@@ -26,6 +26,7 @@ abstract class controller_base extends \anavaro\activenotifications\tests\test_b
 			$this->user,
 			$this->request,
 			$this->notifications,
+			$this->container->getParameter('tables.notifications'),
 			$this->db,
 			$this->template,
 			$this->path_helper

@@ -1,13 +1,13 @@
-<!-- IF ACTIVE_NOTIFICATIONS_ENABLED -->
-	<!-- INCLUDEJS js/synced-storage.js -->
-	<!-- INCLUDEJS js/active-notifications.js -->
+{% if ACTIVE_NOTIFICATIONS_ENABLED %}
+	{% INCLUDEJS 'js/synced-storage.js' %}
+	{% INCLUDEJS 'js/active-notifications.js' %}
 	<script>
 		var activeNotifications = {
-			cookiePrefix		: '{A_COOKIE_PREFIX}',
-			sessionLength		: {ACTIVE_NOTIFICATIONS_SESSION_LENGTH},
-			updateInterval		: {ACTIVE_NOTIFICATIONS_TIME},
-			updateUrl			: '{ACTIVE_NOTIFICATIONS_URL}',
-			lastNotificationId	: {ACTIVE_NOTIFICATIONS_LAST}
+			cookiePrefix		: '{{ COOKIE_PREFIX | escape('js') }}',
+			sessionLength		: {{ ACTIVE_NOTIFICATIONS_SESSION_LENGTH }},
+			updateInterval		: {{ ACTIVE_NOTIFICATIONS_TIME }},
+			updateUrl			: '{{ ACTIVE_NOTIFICATIONS_URL }}',
+			lastNotificationId	: {{ ACTIVE_NOTIFICATIONS_LAST }}
 		};
 	</script>
-<!-- ENDIF -->
+{% endif %}
