@@ -82,7 +82,7 @@ class listener implements EventSubscriberInterface
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $this->config['notification_pull_time'],
 				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
 				'ACTIVE_NOTIFICATIONS_URL'				=> $this->helper->route('anavaro_activenotifications_puller', array(), false),
-				'A_COOKIE_PREFIX'						=> addslashes($this->config['cookie_name'] . '_'),
+				'COOKIE_PREFIX'							=> $this->config['cookie_name'] . '_',
 			));
 		}
 	}
