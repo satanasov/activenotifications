@@ -5,6 +5,7 @@ services:
             - '@user'
             - '@request'
             - '@notification_manager'
+            - '%tables.notifications%'
             - '@dbal.conn'
             - '@template'
             - '@path_helper'

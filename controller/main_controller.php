@@ -25,6 +25,9 @@ class main_controller
 	/** @var \phpbb\notification\manager */
 	protected $notification_manager;
 
+	/** @var string */
+	protected $notifications_table;
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
@@ -40,6 +43,7 @@ class main_controller
 	 * @param \phpbb\user						$user
 	 * @param \phpbb\request\request_interface	$request
 	 * @param \phpbb\notification\manager		$notification_manager
+	 * @param string			$notifications_table
 	 * @param \phpbb\db\driver\driver_interface	$db
 	 * @param \phpbb\template\template			$template
 	 * @param \phpbb\path_helper				$path_helper
@@ -48,6 +52,7 @@ class main_controller
 		\phpbb\user $user,
 		\phpbb\request\request_interface $request,
 		\phpbb\notification\manager $notification_manager,
+		$notifications_table,
 		\phpbb\db\driver\driver_interface $db,
 		\phpbb\template\template $template,
 		\phpbb\path_helper $path_helper
@@ -56,6 +61,7 @@ class main_controller
 		$this->user								= $user;
 		$this->request							= $request;
 		$this->notification_manager				= $notification_manager;
+		$this->notifications_table	= $notifications_table;
 		$this->db								= $db;
 		$this->template							= $template;
 		$this->path_helper						= $path_helper;
@@ -118,7 +124,7 @@ class main_controller
 		$notifications_new = array();
 
 		$sql = 'SELECT notification_id
-			FROM ' . NOTIFICATIONS_TABLE . '
+			FROM ' . $this->notifications_table . '
 			WHERE notification_id > ' . (int) $last . '
 				AND user_id = ' . (int) $this->user->data['user_id'];
 		$result = $this->db->sql_query($sql);
