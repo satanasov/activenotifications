@@ -11,28 +11,33 @@
 
 namespace anavaro\activenotifications\event;
 
+use phpbb\config\config;
+use phpbb\controller\helper;
+use phpbb\notification\manager;
+use phpbb\template\template;
+use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\config\config */
+	/** @var config */
 	protected $config;
 
-	/** @var \phpbb\user */
+	/** @var user */
 	protected $user;
 
-	/** @var \phpbb\template\template */
+	/** @var template */
 	protected $template;
 
-	/** @var \phpbb\notification\manager */
+	/** @var manager */
 	protected $notification_manager;
 
-	/** @var \phpbb\controller\helper */
+	/** @var helper */
 	protected $helper;
 
-	 /** @var \phpbb\request\request */
-	protected $request;
-
+	/**
+	 * @return array
+	 */
 	static public function getSubscribedEvents()
 	{
 		return array(
@@ -43,34 +48,32 @@ class listener implements EventSubscriberInterface
 
 	/**
 	 * Constructor
-	 * NOTE: The parameters of this method must match in order and type with
-	 * the dependencies defined in the services.yml file for this service.
 	 *
-	 * @param \phpbb\config\config			$config					Config object
-	 * @param \phpbb\user					$user					User object
-	 * @param \phpbb\template\template		$template				Template object
-	 * @param \phpbb\notification\manager	$notification_manager	Notifications manager
-	 * @param \phpbb\controller\helper		$helper					Controller helper
+	 * @param config	$config					Config object
+	 * @param user		$user					User object
+	 * @param template	$template				Template object
+	 * @param manager	$notification_manager	Notifications manager
+	 * @param helper	$helper					Controller helper
 	 */
 	public function __construct(
-		\phpbb\config\config $config,
-		\phpbb\user $user,
-		\phpbb\template\template $template,
-		\phpbb\notification\manager $notification_manager,
-		\phpbb\controller\helper $helper
+		config $config,
+		user $user,
+		template $template,
+		manager $notification_manager,
+		helper $helper
 	)
 	{
-		$this->config						= $config;
-		$this->user							= $user;
-		$this->template						= $template;
-		$this->notification_manager			= $notification_manager;
-		$this->helper						= $helper;
+		$this->config				= $config;
+		$this->user					= $user;
+		$this->template				= $template;
+		$this->notification_manager	= $notification_manager;
+		$this->helper				= $helper;
 	}
 
 	/**
-	 * @param object $event The event object
+	 *
 	 */
-	public function setup($event)
+	public function setup()
 	{
 		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] && !$this->user->data['is_bot'])
 		{
