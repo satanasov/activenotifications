@@ -75,7 +75,7 @@ class listener implements EventSubscriberInterface
 	 */
 	public function setup()
 	{
-		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] && !$this->user->data['is_bot'])
+		if ($this->user->data['user_id'] != ANONYMOUS && $this->user->data['is_registered'] && !$this->user->data['is_bot'] && $this->config['allow_board_notifications'])
 		{
 			$last = $this->get_last_notification();
 
