@@ -3,6 +3,7 @@ services:
         class: anavaro\activenotifications\controller\main_controller
         arguments:
             - '@user'
+            - '@config'
             - '@request'
             - '@notification_manager'
             - '%tables.notifications%'

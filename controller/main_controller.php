@@ -11,6 +11,7 @@
 
 namespace anavaro\activenotifications\controller;
 
+use phpbb\config\config;
 use phpbb\db\driver\driver_interface as db_interface;
 use phpbb\exception\http_exception;
 use phpbb\notification\manager;
@@ -25,6 +26,9 @@ class main_controller
 {
 	/** @var user */
 	protected $user;
+
+	/** @var config */
+	protected $config;
 
 	/** @var request_interface */
 	protected $request;
@@ -48,6 +52,7 @@ class main_controller
 	 * Constructor
 	 *
 	 * @param user				$user
+	 * @param config			$config
 	 * @param request_interface	$request
 	 * @param manager			$notification_manager
 	 * @param string			$notifications_table
@@ -57,6 +62,7 @@ class main_controller
 	 */
 	public function __construct(
 		user $user,
+		config $config,
 		request_interface $request,
 		manager $notification_manager,
 		$notifications_table,
@@ -66,6 +72,7 @@ class main_controller
 	)
 	{
 		$this->user					= $user;
+		$this->config				= $config;
 		$this->request				= $request;
 		$this->notification_manager	= $notification_manager;
 		$this->notifications_table	= $notifications_table;
@@ -79,7 +86,7 @@ class main_controller
 	 */
 	public function base()
 	{
-		if ($this->user->data['user_id'] == ANONYMOUS || !$this->user->data['is_registered'] || $this->user->data['is_bot'] || !$this->request->is_ajax())
+		if ($this->user->data['user_id'] == ANONYMOUS || !$this->user->data['is_registered'] || $this->user->data['is_bot'] || !$this->request->is_ajax() || !$this->config['allow_board_notifications'])
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
