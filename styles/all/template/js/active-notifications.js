@@ -26,9 +26,11 @@ jQuery(function($) {
 			activeNotifications.lastNotificationId = parseInt(data['last']);
 
 			// Change value of notification counter and set window title
-			if (lastUnreadCount != data['unread']) {
-				lastUnreadCount = parseInt(data['unread']);
-				phpbb.markNotifications($(), lastUnreadCount);
+			var newUnreadCount = parseInt(data['unread']);
+			if (lastUnreadCount !== newUnreadCount) {
+				phpbb.markNotifications($(), newUnreadCount);
+				$('#notification_list_button > strong').toggleClass('hidden', newUnreadCount);
+				lastUnreadCount = newUnreadCount;
 			}
 
 			// Add notifications
