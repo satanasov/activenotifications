@@ -29,7 +29,7 @@ jQuery(function($) {
 			var newUnreadCount = parseInt(data['unread']);
 			if (lastUnreadCount !== newUnreadCount) {
 				phpbb.markNotifications($(), newUnreadCount);
-				$('#notification_list_button > strong').toggleClass('hidden', newUnreadCount);
+				$('#notification_list_button > strong').toggleClass('hidden', !newUnreadCount);
 				lastUnreadCount = newUnreadCount;
 			}
 
