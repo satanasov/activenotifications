@@ -44,10 +44,10 @@ class listener implements EventSubscriberInterface
 	 */
 	static public function getSubscribedEvents()
 	{
-		return array(
+		return [
 			'core.acp_board_config_edit_add'	=> 'add_options',
 			'core.page_header'					=> 'setup',
-		);
+		];
 	}
 
 	/**
@@ -86,15 +86,15 @@ class listener implements EventSubscriberInterface
 		{
 			$last = $this->get_last_notification();
 
-			$this->template->assign_vars(array(
+			$this->template->assign_vars([
 				'ACTIVE_NOTIFICATIONS_ENABLED'			=> true,
 				'ACTIVE_NOTIFICATIONS_LAST'				=> $last,
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $this->config['notification_pull_time'],
 				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
-				'ACTIVE_NOTIFICATIONS_URL'				=> $this->controller_helper->route('anavaro_activenotifications_puller', array(), false),
+				'ACTIVE_NOTIFICATIONS_URL'				=> $this->controller_helper->route('anavaro_activenotifications_puller', [], false),
 				'ACTIVE_NOTIFICATIONS_CURRENT_URL'		=> $this->get_current_page(),
 				'COOKIE_PREFIX'							=> $this->config['cookie_name'] . '_',
-			));
+			]);
 		}
 	}
 
@@ -107,10 +107,10 @@ class listener implements EventSubscriberInterface
 		{
 			// Store display_vars event in a local variable
 			$display_vars = $event['display_vars'];
-			$my_config_vars = array(
+			$my_config_vars = [
 				'legend10'					=> 'ACTIVE_NOTIFICATIONS',
-				'notification_pull_time'	=> array('lang' => 'ACTIVE_NOTIFICATIONS_TIME', 'validate' => 'int:5:9999', 'type' => 'number', 'explain' => true),
-			);
+				'notification_pull_time'	=> ['lang' => 'ACTIVE_NOTIFICATIONS_TIME', 'validate' => 'int:5:9999', 'type' => 'number', 'explain' => true],
+			];
 
 			// Insert my config vars after...
 			$insert_after = 'LOAD_CPF_VIEWTOPIC';
@@ -123,7 +123,7 @@ class listener implements EventSubscriberInterface
 				array_slice($display_vars['vars'], $position)
 			);
 
-			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
+			$event['display_vars'] = ['title' => $display_vars['title'], 'vars' => $display_vars['vars']];
 		}
 	}
 
@@ -132,9 +132,9 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_last_notification()
 	{
-		$last_notification = $this->notification_manager->load_notifications('notification.method.board', array(
+		$last_notification = $this->notification_manager->load_notifications('notification.method.board', [
 			'limit' => 1,
-		));
+		]);
 
 		foreach ($last_notification['notifications'] as $notification)
 		{

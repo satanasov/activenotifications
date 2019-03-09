@@ -14,10 +14,10 @@ if (!defined('IN_PHPBB'))
 }
 if (empty($lang) || !is_array($lang))
 {
-	$lang = array();
+	$lang = [];
 }
-$lang = array_merge($lang, array(
+$lang = array_merge($lang, [
 	'ACTIVE_NOTIFICATIONS'	=> 'Активни нотификации',
 	'ACTIVE_NOTIFICATIONS_TIME'	=> 'Интервал за заявка',
 	'ACTIVE_NOTIFICATIONS_TIME_EXPLAIN'	=> 'През колко секунди да проверява за нови нотификации? <br/> ВНИМАНИЕ! Колкото по кратък е интервала, толкова повече заявки ще прави всеки клиент към сървъра ви.',
-));
+]);

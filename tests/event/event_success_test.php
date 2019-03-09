@@ -18,10 +18,10 @@ class event_success_test extends \anavaro\activenotifications\tests\event\event_
 	 */
 	public function test_getSubscribedEvents()
 	{
-		$expected_events = array(
+		$expected_events = [
 			'core.acp_board_config_edit_add',
 			'core.page_header',
-		);
+		];
 
 		$actual_events = array_keys(\anavaro\activenotifications\event\listener::getSubscribedEvents());
 
@@ -33,25 +33,25 @@ class event_success_test extends \anavaro\activenotifications\tests\event\event_
 	 */
 	public function event_success_data()
 	{
-		return array(
-			'base_case' => array(
+		return [
+			'base_case' => [
 				2,		// User ID
 				true,	// Is registered
 				false,	// Is bot
 				60,		// $config['notification_pull_time']
 				3600,	// $config['session_length']
 				3,		// Expected last notification ID
-			),
+			],
 
-			'change_time' => array(
+			'change_time' => [
 				2,		// User ID
 				true,	// Is registered
 				false,	// Is bot
 				10,		// $config['notification_pull_time']
 				600,	// $config['session_length']
 				3,		// Expected last notification ID
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -67,22 +67,22 @@ class event_success_test extends \anavaro\activenotifications\tests\event\event_
 	{
 		$this->assertInstanceOf('\anavaro\activenotifications\event\listener', $this->activenotifications_listener);
 
-		$this->set_user_data(array(
+		$this->set_user_data([
 			'user_id'					=> $user_id,
 			'is_registered'				=> $is_registered,
 			'is_bot'					=> $is_bot,
-		));
+		]);
 
-		$this->set_config_data(array(
+		$this->set_config_data([
 			'allow_board_notifications' => true,
 			'notification_pull_time'	=> $cfg_notification_pull_time,
 			'session_length'			=> $cfg_session_length,
 			'cookie_name'				=> 'phpbb_active_notifications_test'
-		));
+		]);
 
 		$this->template->expects($this->exactly(1))
 			->method('assign_vars')
-			->with(array(
+			->with([
 				'ACTIVE_NOTIFICATIONS_ENABLED'			=> true,
 				'ACTIVE_NOTIFICATIONS_LAST'				=> $expected_last_id,
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $cfg_notification_pull_time,
@@ -90,9 +90,9 @@ class event_success_test extends \anavaro\activenotifications\tests\event\event_
 				'ACTIVE_NOTIFICATIONS_URL'				=> null,
 				'ACTIVE_NOTIFICATIONS_CURRENT_URL'		=> null,
 				'COOKIE_PREFIX'							=> 'phpbb_active_notifications_test_',
-			));
+			]);
 
-		$this->dispatcher->addListener('core.page_header', array($this->activenotifications_listener, 'setup'));
+		$this->dispatcher->addListener('core.page_header', [$this->activenotifications_listener, 'setup']);
 		$this->dispatcher->dispatch('core.page_header');
 	}
 }

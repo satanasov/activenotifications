@@ -115,11 +115,11 @@ class main_controller
 			$notifications_content = $this->render_template('notification_dropdown.html');
 		}
 
-		return new JsonResponse(array(
+		return new JsonResponse([
 			'last'			=> $last,
 			'unread'		=> $notifications['unread_count'],
 			'notifications'	=> $notifications_content,
-		));
+		]);
 	}
 
 	/**
@@ -128,7 +128,7 @@ class main_controller
 	 */
 	protected function get_unread($last)
 	{
-		$notifications_new = array();
+		$notifications_new = [];
 
 		$sql = 'SELECT notification_id
 			FROM ' . $this->notifications_table . '
@@ -147,10 +147,10 @@ class main_controller
 			$notifications_new[] = 0;
 		}
 
-		return $this->notification_manager->load_notifications('notification.method.board', array(
+		return $this->notification_manager->load_notifications('notification.method.board', [
 			'notification_id'	=> $notifications_new,
 			'count_unread'		=> true,
-		));
+		]);
 	}
 
 	/**
@@ -161,10 +161,10 @@ class main_controller
 	 */
 	protected function render_template($template_file)
 	{
-		$this->template->set_filenames(array('body' => $template_file));
+		$this->template->set_filenames(['body' => $template_file]);
 		$content = $this->template->assign_display('body', '', true);
 
-		return trim(str_replace(array("\r", "\n"), '', $content));
+		return trim(str_replace(["\r", "\n"], '', $content));
 	}
 
 	/**
