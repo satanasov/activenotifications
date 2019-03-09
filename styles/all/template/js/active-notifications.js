@@ -18,7 +18,7 @@ jQuery(function($) {
 				last: activeNotifications.lastNotificationId,
 				_referer: activeNotifications.currentUrl
 			};
-			$.getJSON(activeNotifications.updateUrl, data)
+			$.post(activeNotifications.updateUrl, data)
 				.done(accept)
 				.fail(function(jqXHR, textStatus, errorThrown) {
 					if (typeof console !== 'undefined' && console.log) {
