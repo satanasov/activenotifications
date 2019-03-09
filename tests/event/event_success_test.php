@@ -88,7 +88,7 @@ class event_success_test extends \anavaro\activenotifications\tests\event\event_
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $cfg_notification_pull_time,
 				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $cfg_session_length,
 				'ACTIVE_NOTIFICATIONS_URL'				=> null,
-				'ACTIVE_NOTIFICATIONS_CURRENT_URL'		=> null,
+				'ACTIVE_NOTIFICATIONS_CURRENT_URL'		=> 'http://',
 				'COOKIE_PREFIX'							=> 'phpbb_active_notifications_test_',
 			]);
 

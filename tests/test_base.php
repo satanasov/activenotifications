@@ -84,20 +84,21 @@ abstract class test_base extends \phpbb_database_test_case
 		parent::setUp();
 
 		global $phpbb_root_path, $phpEx;
-		global $request, $phpbb_dispatcher;
+		global $request, $db, $phpbb_dispatcher;
 
 		$this->root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
 
-		$this->db = $this->new_dbal();
+		$this->db = $db = $this->new_dbal();
 
 		$this->config = new \phpbb\config\config([]);
 
-		$this->language = $this->getMockBuilder('\phpbb\language\language')
+		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
+		$this->language = new \phpbb\language\language($lang_loader);
+
+		$this->user = $this->getMockBuilder('\phpbb\user')
 			->disableOriginalConstructor()
 			->getMock();
-
-		$this->user = $this->getMock('\phpbb\user', array(), array($this->language, '\phpbb\datetime'));
 
 		$this->template = $template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
