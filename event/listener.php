@@ -12,8 +12,9 @@
 namespace anavaro\activenotifications\event;
 
 use phpbb\config\config;
-use phpbb\controller\helper;
+use phpbb\controller\helper as controller_helper;
 use phpbb\notification\manager;
+use phpbb\path_helper;
 use phpbb\template\template;
 use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -32,8 +33,11 @@ class listener implements EventSubscriberInterface
 	/** @var manager */
 	protected $notification_manager;
 
-	/** @var helper */
-	protected $helper;
+	/** @var controller_helper */
+	protected $controller_helper;
+
+	/** @var path_helper */
+	protected $path_helper;
 
 	/**
 	 * @return array
@@ -49,25 +53,28 @@ class listener implements EventSubscriberInterface
 	/**
 	 * Constructor
 	 *
-	 * @param config	$config					Config object
-	 * @param user		$user					User object
-	 * @param template	$template				Template object
-	 * @param manager	$notification_manager	Notifications manager
-	 * @param helper	$helper					Controller helper
+	 * @param config			$config					Config object
+	 * @param user				$user					User object
+	 * @param template			$template				Template object
+	 * @param manager			$notification_manager	Notifications manager
+	 * @param controller_helper	$controller_helper		Controller helper
+	 * @param path_helper		$path_helper			Path helper
 	 */
 	public function __construct(
 		config $config,
 		user $user,
 		template $template,
 		manager $notification_manager,
-		helper $helper
+		controller_helper $controller_helper,
+		path_helper $path_helper
 	)
 	{
 		$this->config				= $config;
 		$this->user					= $user;
 		$this->template				= $template;
 		$this->notification_manager	= $notification_manager;
-		$this->helper				= $helper;
+		$this->controller_helper	= $controller_helper;
+		$this->path_helper			= $path_helper;
 	}
 
 	/**
@@ -84,7 +91,8 @@ class listener implements EventSubscriberInterface
 				'ACTIVE_NOTIFICATIONS_LAST'				=> $last,
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $this->config['notification_pull_time'],
 				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
-				'ACTIVE_NOTIFICATIONS_URL'				=> $this->helper->route('anavaro_activenotifications_puller', array(), false),
+				'ACTIVE_NOTIFICATIONS_URL'				=> $this->controller_helper->route('anavaro_activenotifications_puller', array(), false),
+				'ACTIVE_NOTIFICATIONS_CURRENT_URL'		=> $this->get_current_page(),
 				'COOKIE_PREFIX'							=> $this->config['cookie_name'] . '_',
 			));
 		}
@@ -134,5 +142,26 @@ class listener implements EventSubscriberInterface
 		}
 
 		return 0;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_current_page()
+	{
+		$page = $this->user->page['page_name'];
+
+		// Remove app.php if URL rewriting is enabled in the ACP
+		if ($this->config['enable_mod_rewrite'])
+		{
+			$app_php = 'app.' . $this->path_helper->get_php_ext() . '/';
+
+			if (($app_position = strpos($page, $app_php)) !== false)
+			{
+				$page = substr($page, $app_position + strlen($app_php));
+			}
+		}
+
+		return generate_board_url() . '/' . $page;
 	}
 }

@@ -93,12 +93,6 @@ class main_controller
 
 		$last = $this->request->variable('last', 0);
 
-		// Fix avatars & smilies
-		if (!defined('PHPBB_USE_BOARD_URL_PATH'))
-		{
-			define('PHPBB_USE_BOARD_URL_PATH', true);
-		}
-
 		$notifications_content = '';
 		$notifications = $this->get_unread($last);
 
@@ -179,7 +173,6 @@ class main_controller
 	 * Example
 	 *  in: "./../index.php"
 	 *  out: "http://example-board.net/index.php"
-	 *
 	 *
 	 * @param string $url
 	 * @return string
