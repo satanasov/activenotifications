@@ -39,7 +39,9 @@ jQuery(function($) {
 
 			// Add notifications
 			if (data['notifications']) {
-				$(data['notifications']).find('ul:last').children('li').insertBefore('.dropdown-contents ul li:first');
+				var $li = $(data['notifications']).find('ul:last').children('li');
+				$li.remove('.no_notifications');
+				$li.insertBefore('.dropdown-contents ul li:first');
 				phpbb.lazyLoadAvatars();
 			}
 		},
