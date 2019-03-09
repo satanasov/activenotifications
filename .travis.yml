@@ -1,6 +1,4 @@
-dist: precise
 sudo: required
-
 language: php
 
 matrix:
@@ -25,10 +23,8 @@ matrix:
       env: DB=mysqli
     - php: 7.1
       env: DB=mysqli
-    - php: hhvm
+    - php: 7.2
       env: DB=mysqli
-  allow_failures:
-    - php: hhvm
   fast_finish: true
 
 env:
