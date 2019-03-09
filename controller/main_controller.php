@@ -128,18 +128,18 @@ class main_controller
 	 */
 	protected function get_unread($last)
 	{
-		$notifications_new = [];
+		$sql_array = [
+			'SELECT'	=> 'n.notification_id',
+			'FROM'		=> [$this->notifications_table => 'n'],
+			'WHERE'		=> 'notification_id > ' . (int) $last . ' AND user_id = ' . (int) $this->user->data['user_id'],
+		];
 
-		$sql = 'SELECT notification_id
-			FROM ' . $this->notifications_table . '
-			WHERE notification_id > ' . (int) $last . '
-				AND user_id = ' . (int) $this->user->data['user_id'];
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query($sql);
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$notifications_new[] = (int) $row['notification_id'];
-		}
+		$rows = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
+
+		$notifications_new = array_column($rows, 'notification_id');
 
 		// Add non-existent notification so that no new notifications are returned
 		if (!$notifications_new)
