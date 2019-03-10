@@ -1,11 +1,11 @@
 {
 	"name": "anavaro/activenotifications",
 	"type": "phpbb-extension",
-	"description": "This extension adds active notifications to your phpBB 3.2 board",
+	"description": "This extension regularly updates the notifications without having to refresh the page.",
 	"homepage": "http://lab.anavaro.com/forum/viewforum.php?f=8",
-	"version": "0.9",
-	"time": "2017-01-14",
-	"license": "GPL-2.0",
+	"version": "1.0.0",
+	"time": "2019-03-10",
+	"license": "GPL-2.0-only",
 	"authors": [
 		{
 			"name": "Stanislav Atanasov",
@@ -21,16 +21,17 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4"
+		"php": ">=5.4.7",
+		"composer/installers": "~1.0"
 	},
 	"require-dev": {
 		"phpbb/epv": "dev-master",
 		"satooshi/php-coveralls": "~1.0"
 	},
 	"extra": {
-		"display-name": "phpBB 3.2 Active Notifications",
+		"display-name": "Active Notifications",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.2.0-RC2"
+			"phpbb/phpbb": ">=3.2.0"
 		},
 		"version-check": {
 			"host": "lab.anavaro.com",
