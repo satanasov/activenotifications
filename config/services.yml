@@ -17,7 +17,8 @@ services:
             - '@user'
             - '@template'
             - '@notification_manager'
+            - '@request'
+            - '@symfony_request'
             - '@controller.helper'
-            - '@path_helper'
         tags:
             - { name: 'event.listener' }

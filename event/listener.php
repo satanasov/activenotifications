@@ -14,7 +14,8 @@ namespace anavaro\activenotifications\event;
 use phpbb\config\config;
 use phpbb\controller\helper as controller_helper;
 use phpbb\notification\manager;
-use phpbb\path_helper;
+use phpbb\request\request_interface;
+use phpbb\symfony_request;
 use phpbb\template\template;
 use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,11 +34,14 @@ class listener implements EventSubscriberInterface
 	/** @var manager */
 	protected $notification_manager;
 
+	/** @var request_interface */
+	protected $request;
+
+	/** @var symfony_request */
+	protected $symfony_request;
+
 	/** @var controller_helper */
 	protected $controller_helper;
-
-	/** @var path_helper */
-	protected $path_helper;
 
 	/**
 	 * @return array
@@ -57,24 +61,27 @@ class listener implements EventSubscriberInterface
 	 * @param user				$user					User object
 	 * @param template			$template				Template object
 	 * @param manager			$notification_manager	Notifications manager
+	 * @param request_interface	$request				Request object
+	 * @param symfony_request	$symfony_request		Symfony request object
 	 * @param controller_helper	$controller_helper		Controller helper
-	 * @param path_helper		$path_helper			Path helper
 	 */
 	public function __construct(
 		config $config,
 		user $user,
 		template $template,
 		manager $notification_manager,
-		controller_helper $controller_helper,
-		path_helper $path_helper
+		request_interface $request,
+		symfony_request $symfony_request,
+		controller_helper $controller_helper
 	)
 	{
 		$this->config				= $config;
 		$this->user					= $user;
 		$this->template				= $template;
 		$this->notification_manager	= $notification_manager;
+		$this->request				= $request;
+		$this->symfony_request		= $symfony_request;
 		$this->controller_helper	= $controller_helper;
-		$this->path_helper			= $path_helper;
 	}
 
 	/**
@@ -143,19 +150,7 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_current_page()
 	{
-		$page = $this->user->page['page_name'];
-
-		// Remove app.php if URL rewriting is enabled in the ACP
-		if ($this->config['enable_mod_rewrite'])
-		{
-			$app_php = 'app.' . $this->path_helper->get_php_ext() . '/';
-
-			if (($app_position = strpos($page, $app_php)) !== false)
-			{
-				$page = substr($page, $app_position + strlen($app_php));
-			}
-		}
-
-		return generate_board_url() . '/' . $page;
+		$request_url = $this->symfony_request->getSchemeAndHttpHost() . $this->symfony_request->getBaseUrl() . $this->symfony_request->getPathInfo();
+		return rtrim($this->request->escape($request_url, true), '/');
 	}
 }
