@@ -105,25 +105,19 @@ class listener implements EventSubscriberInterface
 	{
 		if ($event['mode'] == 'features')
 		{
-			// Store display_vars event in a local variable
-			$display_vars = $event['display_vars'];
-			$my_config_vars = [
+			$config = [
 				'legend10'					=> 'ACTIVE_NOTIFICATIONS',
-				'notification_pull_time'	=> ['lang' => 'ACTIVE_NOTIFICATIONS_TIME', 'validate' => 'int:5:9999', 'type' => 'number', 'explain' => true],
+				'notification_pull_time'	=> [
+					'lang'		=> 'ACTIVE_NOTIFICATIONS_TIME',
+					'validate'	=> 'int:5:9999',
+					'type'		=> 'number',
+					'explain'	=> true,
+				],
 			];
 
-			// Insert my config vars after...
-			$insert_after = 'LOAD_CPF_VIEWTOPIC';
-
-			// Rebuild new config var array
-			$position = array_search($insert_after, array_keys($display_vars['vars'])) - 1;
-			$display_vars['vars'] = array_merge(
-				array_slice($display_vars['vars'], 0, $position),
-				$my_config_vars,
-				array_slice($display_vars['vars'], $position)
-			);
-
-			$event['display_vars'] = ['title' => $display_vars['title'], 'vars' => $display_vars['vars']];
+			$display_vars = $event['display_vars'];
+			$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $config, ['after' => 'load_cpf_viewtopic']);
+			$event['display_vars'] = $display_vars;
 		}
 	}
 
