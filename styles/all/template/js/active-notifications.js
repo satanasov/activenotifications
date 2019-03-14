@@ -10,7 +10,8 @@ jQuery(function($) {
 
 	"use strict";
 
-	var lastUnreadCount = parseInt($('strong', '#notification_list_button').html());
+	var $notificationCount = $('#notification_list_button > strong');
+	var lastUnreadCount = parseInt($notificationCount.html());
 
 	syncedStorage({
 		getData: function(accept) {
@@ -35,7 +36,7 @@ jQuery(function($) {
 			var newUnreadCount = parseInt(data['unread']);
 			if (lastUnreadCount !== newUnreadCount) {
 				phpbb.markNotifications($(), newUnreadCount);
-				$('#notification_list_button > strong').toggleClass('hidden', !newUnreadCount);
+				$notificationCount.toggleClass('hidden', !newUnreadCount);
 				lastUnreadCount = newUnreadCount;
 			}
 
