@@ -11,7 +11,7 @@ jQuery(function($) {
 	"use strict";
 
 	var $notificationCount = $('#notification_list_button > strong');
-	var lastUnreadCount = parseInt($notificationCount.html());
+	var lastUnreadCount = parseInt($notificationCount.text());
 
 	syncedStorage({
 		getData: function(accept) {
