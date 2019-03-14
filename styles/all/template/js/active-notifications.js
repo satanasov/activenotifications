@@ -27,6 +27,8 @@ jQuery(function($) {
 				});
 		},
 		processData: function(data) {
+			$(phpbb).trigger('active_notifications_process_data_before', [data]);
+
 			activeNotifications.lastNotificationId = parseInt(data['last']);
 
 			// Change value of notification counter and set window title
@@ -44,6 +46,8 @@ jQuery(function($) {
 				$(data['notifications']).find('ul:last').children('li').prependTo($container);
 				phpbb.lazyLoadAvatars();
 			}
+
+			$(phpbb).trigger('active_notifications_process_data_after', [data, newUnreadCount]);
 		},
 		updateInterval: activeNotifications.updateInterval,
 		sessionLength: activeNotifications.sessionLength,
