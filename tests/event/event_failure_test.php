@@ -18,25 +18,25 @@ class event_failure_test extends \anavaro\activenotifications\tests\event\event_
 	 */
 	public function event_failure_data()
 	{
-		return array(
-			'is_guest' => array(
+		return [
+			'is_guest' => [
 				1,		// User ID
 				true,	// Is registered
 				false,	// Is bot
-			),
+			],
 
-			'is_not_registered' => array(
+			'is_not_registered' => [
 				2,		// User ID
 				false,	// Is registered
 				false,	// Is bot
-			),
+			],
 
-			'is_bot' => array(
+			'is_bot' => [
 				2,		// User ID
 				true,	// Is registered
 				true,	// Is bot
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -49,20 +49,20 @@ class event_failure_test extends \anavaro\activenotifications\tests\event\event_
 	{
 		$this->assertInstanceOf('\anavaro\activenotifications\event\listener', $this->activenotifications_listener);
 
-		$this->set_user_data(array(
+		$this->set_user_data([
 			'user_id'			=> $user_id,
 			'is_registered'		=> $is_registered,
 			'is_bot'			=> $is_bot,
-		));
+		]);
 
-		$this->set_config_data(array(
+		$this->set_config_data([
 			'allow_board_notifications' => true,
-		));
+		]);
 
 		$this->template->expects($this->exactly(0))
 			->method('assign_vars');
 
-		$this->dispatcher->addListener('core.page_header', array($this->activenotifications_listener, 'setup'));
+		$this->dispatcher->addListener('core.page_header', [$this->activenotifications_listener, 'setup']);
 		$this->dispatcher->dispatch('core.page_header');
 	}
 }

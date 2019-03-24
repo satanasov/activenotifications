@@ -18,8 +18,8 @@ class controller_success_test extends controller_base
 	 */
 	public function controller_data()
 	{
-		return array(
-			array(
+		return [
+			[
 				2,		// User ID
 				true,	// Is registered
 				false,	// Is bot
@@ -28,8 +28,8 @@ class controller_success_test extends controller_base
 				3,		// Expected last notification ID in response
 				2,		// Expected total unread notifications
 				3,		// Expected new notifications sent to the client
-			),
-			array(
+			],
+			[
 				2,		// User ID
 				true,	// Is registered
 				false,	// Is bot
@@ -38,8 +38,8 @@ class controller_success_test extends controller_base
 				3,		// Expected last notification ID in response
 				2,		// Expected total unread notifications
 				2,		// Expected new notifications sent to the client
-			),
-			array(
+			],
+			[
 				2,		// User ID
 				true,	// Is registered
 				false,	// Is bot
@@ -48,8 +48,8 @@ class controller_success_test extends controller_base
 				3,		// Expected last notification ID in response
 				2,		// Expected total unread notifications
 				1,		// Expected new notifications sent to the client
-			),
-			array(
+			],
+			[
 				2,		// User ID
 				true,	// Is registered
 				false,	// Is bot
@@ -58,8 +58,8 @@ class controller_success_test extends controller_base
 				3,		// Expected last notification ID in response
 				2,		// Expected total unread notifications
 				0,		// Expected new notifications sent to the client
-			),
-			array(
+			],
+			[
 				3,		// User ID
 				true,	// Is registered
 				false,	// Is bot
@@ -68,8 +68,8 @@ class controller_success_test extends controller_base
 				0,		// Expected last notification ID in response
 				0,		// Expected total unread notifications
 				0,		// Expected new notifications sent to the client
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -87,15 +87,15 @@ class controller_success_test extends controller_base
 	{
 		$this->assertInstanceOf('\anavaro\activenotifications\controller\main_controller', $this->activenotifications_controller);
 
-		$this->user->data = array_merge($this->user->data, array(
+		$this->user->data = array_merge($this->user->data, [
 			'user_id'		=> $user_id,
 			'is_registered'	=> $is_registered,
 			'is_bot'		=> $is_bot,
-		));
+		]);
 
-		$this->set_config_data(array(
+		$this->set_config_data([
 			'allow_board_notifications' => true,
-		));
+		]);
 
 		$this->request->expects($this->any())
 			->method('is_ajax')

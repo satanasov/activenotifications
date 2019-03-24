@@ -16,6 +16,9 @@ abstract class event_base extends \anavaro\activenotifications\tests\test_base
 	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\controller\helper $controller_helper */
 	protected $controller_helper;
 
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\symfony_request $symfony_request */
+	protected $symfony_request;
+
 	/** @var \anavaro\activenotifications\event\listener */
 	protected $activenotifications_listener;
 
@@ -27,11 +30,17 @@ abstract class event_base extends \anavaro\activenotifications\tests\test_base
 			->disableOriginalConstructor()
 			->getMock();
 
+		$this->symfony_request = $this->getMockBuilder('\phpbb\symfony_request')
+			->disableOriginalConstructor()
+			->getMock();
+
 		$this->activenotifications_listener = new \anavaro\activenotifications\event\listener(
 			$this->config,
 			$this->user,
 			$this->template,
 			$this->notifications,
+			$this->request,
+			$this->symfony_request,
 			$this->controller_helper
 		);
 	}

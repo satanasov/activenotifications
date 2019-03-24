@@ -93,12 +93,6 @@ class main_controller
 
 		$last = $this->request->variable('last', 0);
 
-		// Fix avatars & smilies
-		if (!defined('PHPBB_USE_BOARD_URL_PATH'))
-		{
-			define('PHPBB_USE_BOARD_URL_PATH', true);
-		}
-
 		$notifications_content = '';
 		$notifications = $this->get_unread($last);
 
@@ -121,11 +115,11 @@ class main_controller
 			$notifications_content = $this->render_template('notification_dropdown.html');
 		}
 
-		return new JsonResponse(array(
+		return new JsonResponse([
 			'last'			=> $last,
 			'unread'		=> $notifications['unread_count'],
 			'notifications'	=> $notifications_content,
-		));
+		]);
 	}
 
 	/**
@@ -134,18 +128,18 @@ class main_controller
 	 */
 	protected function get_unread($last)
 	{
-		$notifications_new = array();
+		$sql_array = [
+			'SELECT'	=> 'n.notification_id',
+			'FROM'		=> [$this->notifications_table => 'n'],
+			'WHERE'		=> 'notification_id > ' . (int) $last . ' AND user_id = ' . (int) $this->user->data['user_id'],
+		];
 
-		$sql = 'SELECT notification_id
-			FROM ' . $this->notifications_table . '
-			WHERE notification_id > ' . (int) $last . '
-				AND user_id = ' . (int) $this->user->data['user_id'];
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query($sql);
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$notifications_new[] = (int) $row['notification_id'];
-		}
+		$rows = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
+
+		$notifications_new = array_column($rows, 'notification_id');
 
 		// Add non-existent notification so that no new notifications are returned
 		if (!$notifications_new)
@@ -153,10 +147,10 @@ class main_controller
 			$notifications_new[] = 0;
 		}
 
-		return $this->notification_manager->load_notifications('notification.method.board', array(
+		return $this->notification_manager->load_notifications('notification.method.board', [
 			'notification_id'	=> $notifications_new,
 			'count_unread'		=> true,
-		));
+		]);
 	}
 
 	/**
@@ -167,10 +161,10 @@ class main_controller
 	 */
 	protected function render_template($template_file)
 	{
-		$this->template->set_filenames(array('body' => $template_file));
+		$this->template->set_filenames(['body' => $template_file]);
 		$content = $this->template->assign_display('body', '', true);
 
-		return trim(str_replace(array("\r", "\n"), '', $content));
+		return trim(str_replace(["\r", "\n"], '', $content));
 	}
 
 	/**
@@ -179,7 +173,6 @@ class main_controller
 	 * Example
 	 *  in: "./../index.php"
 	 *  out: "http://example-board.net/index.php"
-	 *
 	 *
 	 * @param string $url
 	 * @return string

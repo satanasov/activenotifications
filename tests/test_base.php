@@ -68,7 +68,7 @@ abstract class test_base extends \phpbb_database_test_case
 	 */
 	static protected function setup_extensions()
 	{
-		return array('anavaro/activenotifications');
+		return ['anavaro/activenotifications'];
 	}
 
 	/**
@@ -84,20 +84,21 @@ abstract class test_base extends \phpbb_database_test_case
 		parent::setUp();
 
 		global $phpbb_root_path, $phpEx;
-		global $request, $phpbb_dispatcher;
+		global $request, $db, $phpbb_dispatcher;
 
 		$this->root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
 
-		$this->db = $this->new_dbal();
+		$this->db = $db = $this->new_dbal();
 
-		$this->config = new \phpbb\config\config(array());
+		$this->config = new \phpbb\config\config([]);
 
-		$this->language = $this->getMockBuilder('\phpbb\language\language')
+		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
+		$this->language = new \phpbb\language\language($lang_loader);
+
+		$this->user = $this->getMockBuilder('\phpbb\user')
 			->disableOriginalConstructor()
 			->getMock();
-
-		$this->user = $this->getMock('\phpbb\user', array(), array($this->language, '\phpbb\datetime'));
 
 		$this->template = $template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
@@ -154,8 +155,8 @@ abstract class test_base extends \phpbb_database_test_case
 		$phpbb_container->setParameter('tables.notification_types', 'phpbb_notification_types');
 
 		$this->notifications = new \phpbb_notification_manager_helper(
-			array(),
-			array(),
+			[],
+			[],
 			$this->container,
 			$this->user_loader,
 			$this->dispatcher,
@@ -172,14 +173,14 @@ abstract class test_base extends \phpbb_database_test_case
 
 		$this->notifications->setDependencies($this->auth, $this->config);
 
-		$types = array();
+		$types = [];
 		foreach ($this->get_notification_types() as $type)
 		{
 			$class = $this->build_type($type);
 			$types[$type] = $class;
 		}
 		$this->notifications->set_var('notification_types', $types);
-		$methods = array();
+		$methods = [];
 		foreach ($this->get_notification_methods() as $method)
 		{
 			$class = $this->container->get($method);
@@ -202,9 +203,9 @@ abstract class test_base extends \phpbb_database_test_case
 	 */
 	protected function get_notification_types()
 	{
-		return array(
+		return [
 			'notification.type.pm'
-		);
+		];
 	}
 
 	/**
@@ -212,9 +213,9 @@ abstract class test_base extends \phpbb_database_test_case
 	 */
 	protected function get_notification_methods()
 	{
-		return array(
+		return [
 			'notification.method.board',
-		);
+		];
 	}
 
 	/**

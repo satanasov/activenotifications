@@ -12,8 +12,10 @@
 namespace anavaro\activenotifications\event;
 
 use phpbb\config\config;
-use phpbb\controller\helper;
+use phpbb\controller\helper as controller_helper;
 use phpbb\notification\manager;
+use phpbb\request\request_interface;
+use phpbb\symfony_request;
 use phpbb\template\template;
 use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -32,42 +34,54 @@ class listener implements EventSubscriberInterface
 	/** @var manager */
 	protected $notification_manager;
 
-	/** @var helper */
-	protected $helper;
+	/** @var request_interface */
+	protected $request;
+
+	/** @var symfony_request */
+	protected $symfony_request;
+
+	/** @var controller_helper */
+	protected $controller_helper;
 
 	/**
 	 * @return array
 	 */
 	static public function getSubscribedEvents()
 	{
-		return array(
+		return [
 			'core.acp_board_config_edit_add'	=> 'add_options',
 			'core.page_header'					=> 'setup',
-		);
+		];
 	}
 
 	/**
 	 * Constructor
 	 *
-	 * @param config	$config					Config object
-	 * @param user		$user					User object
-	 * @param template	$template				Template object
-	 * @param manager	$notification_manager	Notifications manager
-	 * @param helper	$helper					Controller helper
+	 * @param config			$config					Config object
+	 * @param user				$user					User object
+	 * @param template			$template				Template object
+	 * @param manager			$notification_manager	Notifications manager
+	 * @param request_interface	$request				Request object
+	 * @param symfony_request	$symfony_request		Symfony request object
+	 * @param controller_helper	$controller_helper		Controller helper
 	 */
 	public function __construct(
 		config $config,
 		user $user,
 		template $template,
 		manager $notification_manager,
-		helper $helper
+		request_interface $request,
+		symfony_request $symfony_request,
+		controller_helper $controller_helper
 	)
 	{
 		$this->config				= $config;
 		$this->user					= $user;
 		$this->template				= $template;
 		$this->notification_manager	= $notification_manager;
-		$this->helper				= $helper;
+		$this->request				= $request;
+		$this->symfony_request		= $symfony_request;
+		$this->controller_helper	= $controller_helper;
 	}
 
 	/**
@@ -79,14 +93,15 @@ class listener implements EventSubscriberInterface
 		{
 			$last = $this->get_last_notification();
 
-			$this->template->assign_vars(array(
+			$this->template->assign_vars([
 				'ACTIVE_NOTIFICATIONS_ENABLED'			=> true,
 				'ACTIVE_NOTIFICATIONS_LAST'				=> $last,
 				'ACTIVE_NOTIFICATIONS_TIME'				=> 1000 * $this->config['notification_pull_time'],
 				'ACTIVE_NOTIFICATIONS_SESSION_LENGTH'	=> 1000 * $this->config['session_length'],
-				'ACTIVE_NOTIFICATIONS_URL'				=> $this->helper->route('anavaro_activenotifications_puller', array(), false),
+				'ACTIVE_NOTIFICATIONS_URL'				=> $this->controller_helper->route('anavaro_activenotifications_puller', [], false),
+				'ACTIVE_NOTIFICATIONS_CURRENT_URL'		=> $this->get_current_page(),
 				'COOKIE_PREFIX'							=> $this->config['cookie_name'] . '_',
-			));
+			]);
 		}
 	}
 
@@ -97,25 +112,19 @@ class listener implements EventSubscriberInterface
 	{
 		if ($event['mode'] == 'features')
 		{
-			// Store display_vars event in a local variable
-			$display_vars = $event['display_vars'];
-			$my_config_vars = array(
+			$config = [
 				'legend10'					=> 'ACTIVE_NOTIFICATIONS',
-				'notification_pull_time'	=> array('lang' => 'ACTIVE_NOTIFICATIONS_TIME', 'validate' => 'int:5:9999', 'type' => 'number', 'explain' => true),
-			);
+				'notification_pull_time'	=> [
+					'lang'		=> 'ACTIVE_NOTIFICATIONS_TIME',
+					'validate'	=> 'int:5:9999',
+					'type'		=> 'number',
+					'explain'	=> true,
+				],
+			];
 
-			// Insert my config vars after...
-			$insert_after = 'LOAD_CPF_VIEWTOPIC';
-
-			// Rebuild new config var array
-			$position = array_search($insert_after, array_keys($display_vars['vars'])) - 1;
-			$display_vars['vars'] = array_merge(
-				array_slice($display_vars['vars'], 0, $position),
-				$my_config_vars,
-				array_slice($display_vars['vars'], $position)
-			);
-
-			$event['display_vars'] = array('title' => $display_vars['title'], 'vars' => $display_vars['vars']);
+			$display_vars = $event['display_vars'];
+			$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $config, ['after' => 'load_cpf_viewtopic']);
+			$event['display_vars'] = $display_vars;
 		}
 	}
 
@@ -124,9 +133,9 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_last_notification()
 	{
-		$last_notification = $this->notification_manager->load_notifications('notification.method.board', array(
+		$last_notification = $this->notification_manager->load_notifications('notification.method.board', [
 			'limit' => 1,
-		));
+		]);
 
 		foreach ($last_notification['notifications'] as $notification)
 		{
@@ -134,5 +143,14 @@ class listener implements EventSubscriberInterface
 		}
 
 		return 0;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_current_page()
+	{
+		$request_url = $this->symfony_request->getSchemeAndHttpHost() . $this->symfony_request->getBaseUrl() . $this->symfony_request->getPathInfo();
+		return rtrim($this->request->escape($request_url, true), '/');
 	}
 }

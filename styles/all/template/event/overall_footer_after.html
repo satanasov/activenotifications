@@ -6,7 +6,8 @@
 			cookiePrefix		: '{{ COOKIE_PREFIX | escape('js') }}',
 			sessionLength		: {{ ACTIVE_NOTIFICATIONS_SESSION_LENGTH }},
 			updateInterval		: {{ ACTIVE_NOTIFICATIONS_TIME }},
-			updateUrl			: '{{ ACTIVE_NOTIFICATIONS_URL }}',
+			updateUrl			: '{{ ACTIVE_NOTIFICATIONS_URL | escape('js') }}',
+			currentUrl			: '{{ ACTIVE_NOTIFICATIONS_CURRENT_URL | escape('js') }}',
 			lastNotificationId	: {{ ACTIVE_NOTIFICATIONS_LAST }}
 		};
 	</script>

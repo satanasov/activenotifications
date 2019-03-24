@@ -18,43 +18,43 @@ class controller_failure_test extends controller_base
 	 */
 	public function controller_failure_data()
 	{
-		return array(
-			'is_guest' => array(
+		return [
+			'is_guest' => [
 				1,		// User ID
 				true,	// Is registered
 				false,	// Is bot
 				true,	// Is ajax request
 				403,
 				'NO_AUTH_OPERATION',
-			),
+			],
 
-			'is_not_registered' => array(
+			'is_not_registered' => [
 				2,		// User ID
 				false,	// Is registered
 				false,	// Is bot
 				true,	// Is ajax request
 				403,
 				'NO_AUTH_OPERATION',
-			),
+			],
 
-			'is_bot' => array(
+			'is_bot' => [
 				2,		// User ID
 				true,	// Is registered
 				true,	// Is bot
 				true,	// Is ajax request
 				403,
 				'NO_AUTH_OPERATION',
-			),
+			],
 
-			'is_not_ajax' => array(
+			'is_not_ajax' => [
 				2,		// User ID
 				true,	// Is registered
 				false,	// Is bot
 				false,	// Is ajax request
 				403,
 				'NO_AUTH_OPERATION',
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -70,15 +70,15 @@ class controller_failure_test extends controller_base
 	{
 		$this->assertInstanceOf('\anavaro\activenotifications\controller\main_controller', $this->activenotifications_controller);
 
-		$this->set_user_data(array(
+		$this->set_user_data([
 			'user_id'		=> $user_id,
 			'is_registered'	=> $is_registered,
 			'is_bot'		=> $is_bot,
-		));
+		]);
 
-		$this->set_config_data(array(
+		$this->set_config_data([
 			'allow_board_notifications' => true,
-		));
+		]);
 
 		$this->request->expects($this->any())
 			->method('is_ajax')

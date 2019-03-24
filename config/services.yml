@@ -1,6 +1,6 @@
 services:
     anavaro.activenotifications.maincontroller:
-        class: anavaro\activenotifications\controller\main_controller
+        class: 'anavaro\activenotifications\controller\main_controller'
         arguments:
             - '@user'
             - '@config'
@@ -11,12 +11,14 @@ services:
             - '@template'
             - '@path_helper'
     anavaro.activenotifications.listener:
-        class: anavaro\activenotifications\event\listener
+        class: 'anavaro\activenotifications\event\listener'
         arguments:
             - '@config'
             - '@user'
             - '@template'
             - '@notification_manager'
+            - '@request'
+            - '@symfony_request'
             - '@controller.helper'
         tags:
-            - { name: event.listener }
+            - { name: 'event.listener' }
