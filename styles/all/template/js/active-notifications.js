@@ -42,7 +42,7 @@ jQuery(function($) {
 
 			// Add notifications
 			if (data['notifications']) {
-				var $container = $('.dropdown-contents ul');
+				var $container = $('#notification_list .dropdown-contents > ul');
 				$container.find('li.no_notifications').remove();
 				$(data['notifications']).find('ul:last').children('li').prependTo($container);
 				phpbb.lazyLoadAvatars();
