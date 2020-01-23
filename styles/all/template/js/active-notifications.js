@@ -11,7 +11,7 @@ jQuery(function($) {
 	"use strict";
 
 	var $notificationCount = $('#notification_list_button > strong');
-	var lastUnreadCount = parseInt($notificationCount.text());
+	var lastUnreadCount = parseInt($notificationCount.text(), 10);
 
 	syncedStorage({
 		getData: function(accept) {
@@ -30,10 +30,10 @@ jQuery(function($) {
 		processData: function(data) {
 			$(phpbb).trigger('active_notifications_process_data_before', [data]);
 
-			activeNotifications.lastNotificationId = parseInt(data['last']);
+			activeNotifications.lastNotificationId = parseInt(data['last'], 10);
 
 			// Change value of notification counter and set window title
-			var newUnreadCount = parseInt(data['unread']);
+			var newUnreadCount = parseInt(data['unread'], 10);
 			if (lastUnreadCount !== newUnreadCount) {
 				phpbb.markNotifications($(), newUnreadCount);
 				$notificationCount.toggleClass('hidden', !newUnreadCount);
@@ -42,7 +42,7 @@ jQuery(function($) {
 
 			// Add notifications
 			if (data['notifications']) {
-				var $container = $('.dropdown-contents ul');
+				var $container = $('#notification_list .dropdown-contents > ul');
 				$container.find('li.no_notifications').remove();
 				$(data['notifications']).find('ul:last').children('li').prependTo($container);
 				phpbb.lazyLoadAvatars();
