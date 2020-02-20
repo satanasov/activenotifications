@@ -40,15 +40,18 @@ jQuery(function($) {
 				lastUnreadCount = newUnreadCount;
 			}
 
+			let $notifications = $([]);
+
 			// Add notifications
 			if (data['notifications']) {
 				let $container = $('#notification_list .dropdown-contents > ul');
 				$container.find('li.no_notifications').remove();
-				$(data['notifications']).find('ul:last').children('li').prependTo($container);
+				$notifications = $(data['notifications']).find('ul:last').children('li');
+				$notifications.prependTo($container);
 				phpbb.lazyLoadAvatars();
 			}
 
-			$(phpbb).trigger('active_notifications_process_data_after', [data, newUnreadCount]);
+			$(phpbb).trigger('active_notifications_process_data_after', [data, newUnreadCount, $notifications]);
 		},
 		updateInterval: activeNotifications.updateInterval,
 		sessionLength: activeNotifications.sessionLength,
