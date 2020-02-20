@@ -79,7 +79,7 @@ abstract class test_base extends \phpbb_database_test_case
 		return $this->createXMLDataSet(dirname(__FILE__) . '/fixtures/fixtures.xml');
 	}
 
-	public function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 

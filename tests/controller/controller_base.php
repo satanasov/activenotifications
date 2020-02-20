@@ -18,7 +18,7 @@ abstract class controller_base extends \anavaro\activenotifications\tests\test_b
 	/** @var \anavaro\activenotifications\controller\main_controller */
 	protected $activenotifications_controller;
 
-	public function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 

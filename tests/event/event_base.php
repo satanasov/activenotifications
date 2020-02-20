@@ -22,7 +22,7 @@ abstract class event_base extends \anavaro\activenotifications\tests\test_base
 	/** @var \anavaro\activenotifications\event\listener */
 	protected $activenotifications_listener;
 
-	public function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 
