@@ -1,5 +1,7 @@
 # Active Notifications
-![Build Status](https://travis-ci.org/satanasov/activenotifications.svg?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/satanasov/activenotifications/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/satanasov/activenotifications/?branch=master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/satanasov/activenotifications/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/satanasov/activenotifications/?branch=master)
+[![Build Status](https://travis-ci.org/satanasov/activenotifications.svg?branch=master)](https://travis-ci.org/satanasov/activenotifications) 
+[![Code Coverage](https://scrutinizer-ci.com/g/satanasov/activenotifications/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/satanasov/activenotifications/?branch=master) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/satanasov/activenotifications/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/satanasov/activenotifications/?branch=master)
 
 This extension will keep your notifications "active" - it will pull special controller every configurable amount of seconds and will recieve JSON of the notifications for the user. Then it will update the notifications container adding new ones at the top.
 
