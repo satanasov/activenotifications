@@ -104,25 +104,8 @@ class main_controller
 			{
 				$last = max($last, $notification->notification_id);
 
-				/*
-				 * Let's cheat a bit for tests sake
-				 * We know that PHP 7.4.x has issue with bellow line and reports:
-				 * "Creating default object from empty value"
-				 * So we will depricate errors ONLY for the line that triggers it
-				 */
-				if (PHP_VERSION_ID > 70399)
-				{
-					$errorlevel=error_reporting();
-					error_reporting(0);
-				}
-
 				/** @var type_interface $notification */
 				$notification_for_display = $notification->prepare_for_display();
-
-				if (PHP_VERSION_ID > 70399)
-				{
-					error_reporting($errorlevel);
-				}
 				$notification_for_display['URL'] = $this->relative_to_absolute_url($notification_for_display['URL']);
 				$notification_for_display['U_MARK_READ'] = $this->relative_to_absolute_url($notification_for_display['U_MARK_READ']);
 

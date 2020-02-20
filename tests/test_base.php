@@ -83,7 +83,7 @@ abstract class test_base extends \phpbb_database_test_case
 	{
 		parent::setUp();
 
-		global $phpbb_root_path, $phpEx;
+		global $phpbb_root_path, $phpEx, $user;
 		global $request, $db, $phpbb_dispatcher;
 
 		$this->root_path = $phpbb_root_path;
@@ -100,6 +100,7 @@ abstract class test_base extends \phpbb_database_test_case
 			->disableOriginalConstructor()
 			->getMock();
 
+		$user = $this->user;
 		$this->template = $template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
 
