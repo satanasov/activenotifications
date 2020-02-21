@@ -123,7 +123,7 @@ class listener implements EventSubscriberInterface
 			];
 
 			$display_vars = $event['display_vars'];
-			$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $config, ['after' => 'load_cpf_viewtopic']);
+			$display_vars['vars'] = phpbb_insert_config_array($display_vars['vars'], $config, ['after' => 'allow_quick_reply']);
 			$event['display_vars'] = $display_vars;
 		}
 	}
